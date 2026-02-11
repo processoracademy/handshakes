@@ -1,0 +1,8 @@
+# build output directory
+build
+obj_dir
+result
+.direnv
+
+# per-user flags
+fusesoc.conf

@@ -1,0 +1,22 @@
+CAPI=2:
+name: "processoracademy:handshakes:base:0.4.2"
+description: ""
+
+filesets:
+  rtl:
+    depend:
+      - processoracademy:handshakes:basePkgs
+    files:
+      - rtl/hs_io.sv
+      - rtl/hs_macro.sv:
+          is_include_file: true
+      - rtl/_hs_monostable.sv
+      - rtl/_hs_sr_vector.sv
+      - rtl/_hs_priority_encode.sv
+      - rtl/_hs_round_robin.sv
+    file_type: systemVerilogSource
+
+targets:
+  default:
+    filesets:
+      - rtl

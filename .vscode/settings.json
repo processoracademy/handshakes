@@ -1,0 +1,7 @@
+{
+    "verilog.formatting.veribleVerilogFormatter.arguments": "--flagfile .flags.verible_verilog_format",
+    "verilog.formatting.verilogHDL.formatter": "verible-verilog-format",
+    "files.associations": {
+        "*.core": "yaml"
+    }
+}

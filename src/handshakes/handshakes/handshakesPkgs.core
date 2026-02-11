@@ -1,0 +1,13 @@
+CAPI=2:
+name: "processoracademy:handshakes:handshakesPkgs:0.4.2"
+description: ""
+
+filesets:
+  rtl:
+    depend:
+      - processoracademy:handshakes:basePkgs
+
+targets:
+  default:
+    filesets:
+      - rtl

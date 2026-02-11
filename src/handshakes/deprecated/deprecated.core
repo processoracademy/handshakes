@@ -1,0 +1,25 @@
+CAPI=2:
+name: "processoracademy:handshakes:deprecated:0.4.2"
+description: ""
+
+filesets:
+  rtl:
+    depend:
+      - processoracademy:handshakes:base
+      - processoracademy:handshakes:handshakes
+    files:
+      - rtl/hs_eat.sv
+      - rtl/hs_convert_widths.sv
+      - rtl/hs_copy.sv
+      - rtl/hs_flow_control.sv
+      - rtl/hs_sync_n_to_1.sv
+      - rtl/hs_lockstep_generic.sv
+      - rtl/hs_lockstep.sv
+      - rtl/hs_lockstep_packed.sv
+      - rtl/hs_merge_values.sv
+    file_type: systemVerilogSource
+
+targets:
+  default:
+    filesets:
+      - rtl

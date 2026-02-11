@@ -1,0 +1,43 @@
+CAPI=2:
+name: "processoracademy:handshakes:handshakes:0.4.2"
+description: ""
+
+filesets:
+  rtl:
+    depend:
+      - processoracademy:handshakes:base
+    files:
+      - rtl/hs_replace_data.sv
+      - rtl/hs_reflect.sv
+      - rtl/hs_absorb_aborts.sv
+      - rtl/hs_alternate_generic.sv
+      - rtl/hs_alternate.sv
+      - rtl/hs_append_generic.sv
+      - rtl/hs_append.sv
+      - rtl/hs_arbiter.sv
+      - rtl/hs_arbitrate_followers.sv
+      - rtl/hs_arbitrate_leaders.sv
+      - rtl/hs_atomize.sv
+      - rtl/hs_broadcast.sv
+      - rtl/hs_buffer.sv
+      - rtl/hs_capture_on_rising_edge.sv
+      - rtl/hs_demux_index.sv
+      - rtl/hs_demux_mask.sv
+      - rtl/hs_fifo.sv
+      - rtl/hs_filter.sv
+      - rtl/hs_override_fctl.sv
+      - rtl/hs_frame_switch.sv
+      - rtl/hs_init_snapshot.sv
+      - rtl/hs_ordered_resource_share.sv
+      - rtl/hs_read_mem.sv
+      - rtl/hs_reframe.sv
+      - rtl/hs_sample.sv
+      - rtl/hs_unblock.sv
+      - rtl/hs_unframe.sv
+      - rtl/hs_sync.sv
+    file_type: systemVerilogSource
+
+targets:
+  default:
+    filesets:
+      - rtl
