@@ -25,6 +25,8 @@ module _hs_round_robin #(
     assign full  = usage >= usage_t'(Width);
     assign empty = usage == '0;
 
+    logic  enq;
+    mask_t enq_mask;
     mask_t pending;
     _hs_sr_vector #(
         .Width          (Width),
@@ -40,8 +42,6 @@ module _hs_round_robin #(
         .vector_o  (pending)
     );
 
-    logic  enq;
-    mask_t enq_mask;
     always_comb begin
         mask_t filtered_input;
         filtered_input = mask_i & (~pending);
