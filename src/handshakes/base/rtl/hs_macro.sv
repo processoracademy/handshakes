@@ -18,7 +18,8 @@ initial assert (hs.W == data_w) else $warning("%s width (%0d) must equal %s (%0d
 // Parameters:
 //  hs     - <hs_io> interface to check
 //  type_t - type to check against
-`define HS_ASSERT_T(hs, type_t) \
+`define HS_ASSERT_T(hs,
+                    type_t) \
 initial assert \
 `ifdef VERILATOR (type(hs.data) == type(type_t)) \
 `else (hs.W == $bits(type_t)) \
@@ -32,7 +33,8 @@ else $warning("handshake %s.data's %0d-bit type (%s) must equal %0d-bit type %s 
 // Parameters:
 //  hs_0 - first <hs_io> interface to check
 //  hs_1 - second <hs_io> interface to check
-`define HS_ASSERT_H(hs_0, hs_1) \
+`define HS_ASSERT_H(hs_0,
+                    hs_1) \
 initial assert \
 `ifdef VERILATOR (type(hs_0.data) == type(hs_1.data)) \
 `else (hs_0.W == hs_1.W) \
@@ -116,7 +118,7 @@ endgenerate \
 // Parameters:
 //  hs - the <hs_io> handshake interface to drive
 `define HS_DRIVE_LDR(ldr_hs) \
-assign ldr_hs.ldrv = ldr_hs.drive_ldr(ldr_hs.lctl);
+assign ldr_hs.ldrv = hs::drive_ldr(ldr_hs.state, ldr_hs.lctl);
 
 // Macro: HS_DRIVE_FLW
 // Connect the follower handshake to its <hs::fctl_s> fctl control struct.
@@ -124,6 +126,6 @@ assign ldr_hs.ldrv = ldr_hs.drive_ldr(ldr_hs.lctl);
 // Parameters:
 //  hs - the <hs_io> handshake interface to drive
 `define HS_DRIVE_FLW(flw_hs) \
-assign flw_hs.fdrv = flw_hs.drive_flw(flw_hs.fctl);
+assign flw_hs.fdrv = hs::drive_flw(flw_hs.state, flw_hs.fctl);
 
 `endif

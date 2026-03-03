@@ -83,14 +83,6 @@ interface hs_io #(
         end
     end
 
-    function hs::fdrv_s drive_flw(input hs::fctl_s fctl);
-        return hs::drive_flw(state, fctl);
-    endfunction : drive_flw
-
-    function hs::ldrv_s drive_ldr(input hs::lctl_s lctl);
-        return hs::drive_ldr(state, lctl);
-    endfunction : drive_ldr
-
     hs::lprobe_s lprobe;
     assign lprobe.ack   = fdrv.ack;
     assign lprobe.state = state;
@@ -117,8 +109,7 @@ interface hs_io #(
         output lctl,
         input prev_flag,
         input next_state,
-        input lprobe,
-        import drive_ldr
+        input lprobe
     );
 
     modport flw(
@@ -140,8 +131,7 @@ interface hs_io #(
         input data_stable,
         input prev_flag,
         input next_state,
-        input fprobe,
-        import drive_flw
+        input fprobe
     );
 
 endinterface
