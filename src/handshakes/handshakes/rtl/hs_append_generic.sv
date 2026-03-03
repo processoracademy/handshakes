@@ -29,9 +29,7 @@ module hs_append_generic #(
     data_t data  [Handshakes];
     genvar g;
     generate
-        assign ldr_hs.lctl = '0;
         for (g = 0; g < Handshakes; g = g + 1) begin : g_dereference
-            assign flw_hs[g].fctl     = '0;
             assign req[g]             = flw_hs[g].ldrv.req;
             assign last[g]            = flw_hs[g].ldrv.last;
             assign exit[g]            = flw_hs[g].flag.exit;
@@ -55,10 +53,11 @@ module hs_append_generic #(
         end
     end
 
-    `HS_DRIVE_FLW(reset_hs)
-    assign reset_hs.fctl.ready = 1'b1;
-    assign reset_hs.fctl.pause = 1'b0;
-    assign reset_hs.fctl.block = retire;
+    hs::fctl_s reset_fctl;
+    `HS_DRIVE_FLW(reset_hs, reset_fctl)
+    assign reset_fctl.ready = 1'b1;
+    assign reset_fctl.pause = 1'b0;
+    assign reset_fctl.block = retire;
 
     always_comb begin
         integer i;

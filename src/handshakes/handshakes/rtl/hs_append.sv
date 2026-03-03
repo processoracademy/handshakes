@@ -24,8 +24,7 @@ module hs_append (
         .data_i(data_t'(tail_hs.data))
     );
     hs_io #(.T(logic)) reset_hs (.*);
-    `HS_DRIVE_LDR(reset_hs)
-    assign reset_hs.lctl = hs::LctlIdle;
+    `HS_DRIVE_LDR(reset_hs, hs::LctlIdle)
     assign reset_hs.data = '0;
     hs_io #(.T(data_t)) internal_hs (.*);
     hs_append_generic #(

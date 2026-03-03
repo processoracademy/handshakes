@@ -7,11 +7,12 @@ module legacy_eot_to_hs_ldr (
     input  type(ldr_hs.data) data_i
 );
 
-    `HS_DRIVE_LDR(ldr_hs)
-    assign ldr_hs.lctl.start = req_i;
-    assign ldr_hs.lctl.pause = !req_i;
-    assign ldr_hs.lctl.close = eot_i;
-    assign ldr_hs.lctl.abort = 1'b0;
+    hs::lctl_s ldr_lctl;
+    `HS_DRIVE_LDR(ldr_hs, ldr_lctl)
+    assign ldr_lctl.start = req_i;
+    assign ldr_lctl.pause = !req_i;
+    assign ldr_lctl.close = eot_i;
+    assign ldr_lctl.abort = 1'b0;
 
     assign ldr_hs.data       = data_i;
     assign ack_o             = ldr_hs.fdrv.ack && (ldr_hs.state != hs::BLOCK);

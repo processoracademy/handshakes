@@ -9,9 +9,10 @@ module req_ack_to_hs_flw (
     wire clk_en = flw_hs.clk_en;
     wire sync_rst = flw_hs.sync_rst;
 
-    `HS_DRIVE_FLW(flw_hs)
-    assign flw_hs.fctl = ack_i ? hs::FctlReady : hs::FctlPause;
-    assign req_o       = flw_hs.ldrv.req;
-    assign data_o      = flw_hs.data;
+    hs::fctl_s flw_fctl;
+    `HS_DRIVE_FLW(flw_hs, flw_fctl)
+    assign flw_fctl = ack_i ? hs::FctlReady : hs::FctlPause;
+    assign req_o    = flw_hs.ldrv.req;
+    assign data_o   = flw_hs.data;
 
 endmodule : req_ack_to_hs_flw

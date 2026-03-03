@@ -117,15 +117,15 @@ endgenerate \
 //
 // Parameters:
 //  hs - the <hs_io> handshake interface to drive
-`define HS_DRIVE_LDR(ldr_hs) \
-assign ldr_hs.ldrv = hs::drive_ldr(ldr_hs.state, ldr_hs.lctl);
+`define HS_DRIVE_LDR(ldr_hs, lctl) \
+assign ldr_hs.ldrv = hs::drive_ldr(ldr_hs.state, lctl);
 
 // Macro: HS_DRIVE_FLW
 // Connect the follower handshake to its <hs::fctl_s> fctl control struct.
 //
 // Parameters:
 //  hs - the <hs_io> handshake interface to drive
-`define HS_DRIVE_FLW(flw_hs) \
-assign flw_hs.fdrv = hs::drive_flw(flw_hs.state, flw_hs.fctl);
+`define HS_DRIVE_FLW(flw_hs, fctl) \
+assign flw_hs.fdrv = hs::drive_flw(flw_hs.state, fctl);
 
 `endif

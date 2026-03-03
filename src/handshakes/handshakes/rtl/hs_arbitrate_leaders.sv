@@ -28,14 +28,12 @@ module hs_arbitrate_leaders #(
             assign lasts[i]           = flw_hs[i].ldrv.last;
             assign flw_data[i]        = data_t'(flw_hs[i].data);
             assign flw_hs[i].fdrv.ack = ldr_hs.fdrv.ack && mask[i];
-            assign flw_hs[i].fctl     = '0;  // We don't use fctl
         end
         assign ldr_hs.data = type (ldr_hs.data)'(flw_data[addr]);
     endgenerate
 
     assign ldr_hs.ldrv.req  = |(reqs & mask);
     assign ldr_hs.ldrv.last = |(lasts & mask);
-    assign ldr_hs.lctl      = '0;  // We don't use lctl
 
     wire bus_is_free = ldr_hs.flag.done || !ldr_hs.flag.live || !(|mask);
     _hs_round_robin #(

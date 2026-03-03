@@ -64,8 +64,6 @@ interface hs_io #(
     T data, prev_data, data_stable;
     hs::flag_s flag, prev_flag;
     hs::state_e state, next_state;
-    hs::lctl_s lctl;
-    hs::fctl_s fctl;
     assign flag        = hs::get_flags(ldrv.req, fdrv.ack, ldrv.last, state);
     assign next_state  = hs::get_next_state(ldrv.req, fdrv.ack, ldrv.last, state);
     assign data_stable = flag.good ? data : prev_data;
@@ -106,7 +104,6 @@ interface hs_io #(
         output data,
 
         // Extras
-        output lctl,
         input prev_flag,
         input next_state,
         input lprobe
@@ -126,7 +123,6 @@ interface hs_io #(
         input data,
 
         // Extras
-        output fctl,
         input prev_data,
         input data_stable,
         input prev_flag,

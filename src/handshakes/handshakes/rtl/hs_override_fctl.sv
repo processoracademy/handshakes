@@ -42,7 +42,5 @@ module hs_override_fctl (
     end
 
     assign ldr_hs.data = flw_hs.data;
-    assign flw_hs.fctl = '0;  // We don't use fctl
-    assign ldr_hs.lctl = '0;  // We don't use lctl
 
 endmodule : hs_override_fctl

@@ -24,12 +24,10 @@ module hs_alternate_generic #(
             assign flw_req[i]          = flw_hs[i].ldrv.req;
             assign flw_hs[i].fdrv.ack  = flw_ack[i];
             assign flw_last[i]         = flw_hs[i].ldrv.last;
-            assign flw_hs[i].fctl      = '0;  // We don't use fctl
 
             assign ldr_hs[i].ldrv.req  = ldr_req[i];
             assign ldr_ack[i]          = ldr_hs[i].fdrv.ack;
             assign ldr_hs[i].ldrv.last = ldr_last[i];
-            assign ldr_hs[i].lctl      = '0;  // We don't use lctl
 
             if (!Bare) begin : g_conn_data
                 assign ldr_hs[i].data = flw_hs[i].data;
@@ -53,8 +51,6 @@ module hs_alternate_generic #(
     assign bus.ldrv.req  = |(flw_req & mask);
     assign bus.fdrv.ack  = |(ldr_ack & mask);
     assign bus.ldrv.last = |(flw_last & mask);
-    assign bus.fctl      = '0;
-    assign bus.lctl      = '0;
 
     hs_arbiter #(
         .Handshakes      (Handshakes),

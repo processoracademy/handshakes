@@ -25,19 +25,21 @@ module hs_fifo #(
     localparam integer EntryWidth = flw_hs.W + 1 + 32'(BufferAborts);
     typedef logic [EntryWidth-1:0] entry_t;
 
-    logic   advance_ldr;
-    logic   advance_flw;
-    entry_t write_entry;
-    entry_t read_entry;
-    util_t  write_util;
-    util_t  read_util;
-    logic   rw_hazard;
-    wire    read_empty = read_util == util_t'(0);
-    wire    ldr_valid = !(rw_hazard || read_empty);
-    `HS_DRIVE_LDR(ldr_hs)
+    logic      advance_ldr;
+    logic      advance_flw;
+    entry_t    write_entry;
+    entry_t    read_entry;
+    util_t     write_util;
+    util_t     read_util;
+    logic      rw_hazard;
+    wire       read_empty = read_util == util_t'(0);
+    wire       ldr_valid = !(rw_hazard || read_empty);
+    hs::lctl_s ldr_lctl;
+    `HS_DRIVE_LDR(ldr_hs, ldr_lctl)
     generate
         hs_io #(.T(data_t)) internal_hs (.*);
-        `HS_DRIVE_FLW(internal_hs)
+        hs::fctl_s internal_fctl;
+        `HS_DRIVE_FLW(internal_hs, internal_fctl)
 
         if (SingleFrame) begin : g_single_frame
             _hs_sr_vector #(
@@ -51,11 +53,11 @@ module hs_fifo #(
                 .set_en_i  (1'b1),
                 .clear_i   (ldr_hs.flag.done),
                 .clear_en_i(1'b1),
-                .vector_o  (internal_hs.fctl.block)
+                .vector_o  (internal_fctl.block)
             );
         end
         else begin : g_multi_frame
-            assign internal_hs.fctl.block = 1'b0;
+            assign internal_fctl.block = 1'b0;
         end
 
         if (BufferAborts) begin : g_preserve_aborts
@@ -76,22 +78,22 @@ module hs_fifo #(
             } entry_long_s;
 
             entry_long_s write;
-            assign write.data             = internal_hs.data;
-            assign write.close            = internal_hs.flag.exit;
-            assign write.abort            = internal_hs.flag.term;
-            assign write_entry            = write;
+            assign write.data          = internal_hs.data;
+            assign write.close         = internal_hs.flag.exit;
+            assign write.abort         = internal_hs.flag.term;
+            assign write_entry         = write;
 
             // LT/GTE Depth is used instead of NE/EQ to account for the 1 overflow abort slot
-            assign internal_hs.fctl.ready = write_util < util_t'(Depth);
-            assign internal_hs.fctl.pause = write_util >= util_t'(Depth);
+            assign internal_fctl.ready = write_util < util_t'(Depth);
+            assign internal_fctl.pause = write_util >= util_t'(Depth);
 
             entry_long_s read;
-            assign read              = read_entry;
-            assign ldr_hs.data       = type(ldr_hs.data)'(read.data);
-            assign ldr_hs.lctl.start = ldr_valid;
-            assign ldr_hs.lctl.pause = !ldr_valid;
-            assign ldr_hs.lctl.close = read.close;
-            assign ldr_hs.lctl.abort = read.abort && ldr_valid;
+            assign read           = read_entry;
+            assign ldr_hs.data    = type (ldr_hs.data)'(read.data);
+            assign ldr_lctl.start = ldr_valid;
+            assign ldr_lctl.pause = !ldr_valid;
+            assign ldr_lctl.close = read.close;
+            assign ldr_lctl.abort = read.abort && ldr_valid;
         end
         else begin : g_eat_aborts
 
@@ -115,20 +117,20 @@ module hs_fifo #(
             } entry_short_s;
 
             entry_short_s write;
-            assign write.data             = internal_hs.data;
-            assign write.close            = internal_hs.flag.exit;
-            assign write_entry            = write;
+            assign write.data          = internal_hs.data;
+            assign write.close         = internal_hs.flag.exit;
+            assign write_entry         = write;
 
-            assign internal_hs.fctl.ready = write_util != util_t'(Depth);
-            assign internal_hs.fctl.pause = write_util == util_t'(Depth);
+            assign internal_fctl.ready = write_util != util_t'(Depth);
+            assign internal_fctl.pause = write_util == util_t'(Depth);
 
             entry_short_s read;
-            assign read              = read_entry;
-            assign ldr_hs.data       = type(ldr_hs.data)'(read.data);
-            assign ldr_hs.lctl.start = ldr_valid;
-            assign ldr_hs.lctl.pause = !ldr_valid;
-            assign ldr_hs.lctl.close = read.close;
-            assign ldr_hs.lctl.abort = 1'b0;
+            assign read           = read_entry;
+            assign ldr_hs.data    = type (ldr_hs.data)'(read.data);
+            assign ldr_lctl.start = ldr_valid;
+            assign ldr_lctl.pause = !ldr_valid;
+            assign ldr_lctl.close = read.close;
+            assign ldr_lctl.abort = 1'b0;
         end
 
     endgenerate

@@ -8,6 +8,4 @@ module hs_unblock (
     assign ldr_hs.ldrv.req  = (ldr_hs.state == hs::BLOCK) ? 1'b0 : flw_hs.ldrv.req;
     assign ldr_hs.ldrv.last = flw_hs.ldrv.last;
     assign flw_hs.fdrv.ack  = (ldr_hs.state == hs::BLOCK) ? 1'b0 : ldr_hs.fdrv.ack;
-    assign ldr_hs.lctl      = '0;  // Unused
-    assign flw_hs.fctl      = '0;  // Unused
 endmodule : hs_unblock

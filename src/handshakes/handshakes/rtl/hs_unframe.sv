@@ -14,6 +14,4 @@ module hs_unframe (
     assign ldr_hs.ldrv.last = 1'b0;
     assign flw_hs.fdrv.ack  = ldr_hs.fdrv.ack && (flw_hs.state != hs::BLOCK);
 
-    assign ldr_hs.lctl      = '0;
-    assign flw_hs.fctl      = '0;
 endmodule : hs_unframe

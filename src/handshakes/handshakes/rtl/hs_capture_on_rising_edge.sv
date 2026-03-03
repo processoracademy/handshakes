@@ -21,7 +21,8 @@ module hs_capture_on_rising_edge #(
         .mono    (mono)
     );
 
-    `HS_DRIVE_LDR(ldr_hs)
+    hs::lctl_s ldr_lctl;
+    `HS_DRIVE_LDR(ldr_hs, ldr_lctl)
     generate
         if (WithForwarding) begin : g_forwarded
             data_t buffer;
@@ -30,8 +31,8 @@ module hs_capture_on_rising_edge #(
                     buffer <= data_i;
                 end
             end
-            assign ldr_hs.lctl.start = mono;
-            assign ldr_hs.data       = mono ? data_i : type(ldr_hs.data)'(buffer);
+            assign ldr_lctl.start = mono;
+            assign ldr_hs.data    = mono ? data_i : type(ldr_hs.data)'(buffer);
         end
         else begin : g_not_forwarded
             logic start;
@@ -46,12 +47,12 @@ module hs_capture_on_rising_edge #(
                     end
                 end
             end
-            assign ldr_hs.lctl.start = start;
+            assign ldr_lctl.start = start;
         end
     endgenerate
 
-    assign ldr_hs.lctl.pause = 1'b0;
-    assign ldr_hs.lctl.close = 1'b1;
-    assign ldr_hs.lctl.abort = 1'b0;
+    assign ldr_lctl.pause = 1'b0;
+    assign ldr_lctl.close = 1'b1;
+    assign ldr_lctl.abort = 1'b0;
 
 endmodule : hs_capture_on_rising_edge
