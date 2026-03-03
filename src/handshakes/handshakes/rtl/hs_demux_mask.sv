@@ -57,25 +57,28 @@ module hs_demux_mask #(
         .vector_o  (pending_reg)
     );
 
-    mask_t ldr_not_ready;
-
-    `HS_DRIVE_FLW(flw_hs)
-    assign flw_hs.fctl.ready = 1'b1;
-    assign flw_hs.fctl.pause = |pending_reg;  // only high if we didn't get everything last cycle.
-    assign flw_hs.fctl.block = |ldr_not_ready;
+    mask_t     ldr_not_ready;
+    hs::fctl_s flw_fctl;
+    `HS_DRIVE_FLW(flw_hs, flw_fctl)
+    assign flw_fctl.ready = 1'b1;
+    assign flw_fctl.pause = |pending_reg;  // only high if we didn't get everything last cycle.
+    assign flw_fctl.block = |ldr_not_ready;
 
     genvar i;
     generate
         for (i = 0; i < Handshakes; i = i + 1) begin : g_connect_leaders
-            wire pending = pending_reg[i] || flw_hs.flag.good;  // forward flag.good to avoid handshake bubbles.
-            `HS_DRIVE_LDR(ldr_hs[i])
-            assign ldr_hs[i].data       = flw_hs.data_stable;
-            assign ldr_hs[i].lctl.start = flw_hs.flag.init && mask_i[i];
-            assign ldr_hs[i].lctl.pause = !pending;
-            assign ldr_hs[i].lctl.close = (flw_hs.flag.exit || (flw_hs.state == hs::BLOCK)) && pending;
-            assign ldr_hs[i].lctl.abort = (flw_hs.state == hs::BLOCK) && !pending;
-            assign pending_clr[i]       = ldr_hs[i].flag.good;
-            assign ldr_not_ready[i]     = pending_reg[i] || (ldr_hs[i].state != hs::READY);
+            logic      pending;
+            hs::lctl_s ldr_lctl;
+            `HS_DRIVE_LDR(ldr_hs[i], ldr_lctl)
+
+            assign pending = pending_reg[i] || flw_hs.flag.good;  // forward flag.good to avoid handshake bubbles.
+            assign ldr_hs[i].data = flw_hs.data_stable;
+            assign ldr_lctl.start = flw_hs.flag.init && mask_i[i];
+            assign ldr_lctl.pause = !pending;
+            assign ldr_lctl.close = (flw_hs.flag.exit || (flw_hs.state == hs::BLOCK)) && pending;
+            assign ldr_lctl.abort = (flw_hs.state == hs::BLOCK) && !pending;
+            assign pending_clr[i] = ldr_hs[i].flag.good;
+            assign ldr_not_ready[i] = pending_reg[i] || (ldr_hs[i].state != hs::READY);
         end
     endgenerate
 

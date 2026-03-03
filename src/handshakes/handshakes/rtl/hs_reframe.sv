@@ -29,7 +29,6 @@ module hs_reframe (
         .fctl_i(fctl)
     );
 
-    assign flw_hs.fctl = '0;
     assign flw_hs.fdrv.ack = internal_hs.ldrv.req && ldr_hs.fdrv.ack && (ldr_hs.state != hs::BLOCK) && (flw_hs.state != hs::BLOCK);
 
 endmodule : hs_reframe

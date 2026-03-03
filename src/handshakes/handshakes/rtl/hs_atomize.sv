@@ -24,7 +24,4 @@ module hs_atomize (
         end
     end
 
-    assign ldr_hs.lctl = '0;
-    assign flw_hs.fctl = '0;
-
 endmodule : hs_atomize

@@ -27,10 +27,6 @@ module hs_lockstep_generic #(
             assign are_ready[i]   = !hs::flw_active(flw_hs[i].state);
             assign are_multi[i]   = flw_hs[i].state == hs::MULTI;
 
-            // Zero lctl/fctl as we are driving req/ack/last directly.
-            assign flw_hs[i].fctl = '0;
-            assign ldr_hs[i].lctl = '0;
-
             always_comb begin
                 unique case (flw_hs[i].state)
                     hs::READY, hs::PROBE: begin

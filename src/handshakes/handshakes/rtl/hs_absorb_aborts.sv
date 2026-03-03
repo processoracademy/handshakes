@@ -42,7 +42,6 @@ module hs_absorb_aborts (
         end
     end
 
-    assign flw_hs.fctl = '0;  // We are driving ack directly
     always_comb begin
         unique case (flw_hs.state)
             hs::READY, hs::PROBE, hs::MULTI: begin
@@ -54,12 +53,13 @@ module hs_absorb_aborts (
         endcase
     end
 
-    `HS_DRIVE_LDR(ldr_hs)
+    hs::lctl_s ldr_lctl;
+    `HS_DRIVE_LDR(ldr_hs, ldr_lctl)
     // req if we have registered an end-of-frame or we know another word is pending
     wire ldr_valid = valid && (flw_hs.ldrv.req || last);
-    assign ldr_hs.lctl.start = ldr_valid;
-    assign ldr_hs.lctl.pause = !ldr_valid;
-    assign ldr_hs.lctl.close = valid && last;
-    assign ldr_hs.lctl.abort = 1'b0;
+    assign ldr_lctl.start = ldr_valid;
+    assign ldr_lctl.pause = !ldr_valid;
+    assign ldr_lctl.close = valid && last;
+    assign ldr_lctl.abort = 1'b0;
 
 endmodule : hs_absorb_aborts

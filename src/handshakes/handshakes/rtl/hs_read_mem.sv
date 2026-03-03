@@ -11,8 +11,11 @@ module hs_read_mem (
     wire clk_en = read_i_hs.clk_en;
     wire sync_rst = read_i_hs.sync_rst;
 
-    `HS_DRIVE_LDR(read_o_hs)
-    `HS_DRIVE_FLW(read_i_hs)
+    hs::lctl_s read_o_lctl;
+    `HS_DRIVE_LDR(read_o_hs, read_o_lctl)
+
+    hs::fctl_s read_i_fctl;
+    `HS_DRIVE_FLW(read_i_hs, read_i_fctl)
 
     typedef logic [read_i_hs.W-1:0] ptr_t;
     typedef logic [read_o_hs.W-1:0] data_t;
@@ -38,9 +41,9 @@ module hs_read_mem (
 
     assign unblock              = read_o_hs.flag.done || ((!hs::flw_active(read_o_hs.state)) && output_frame.flag.term);
 
-    assign read_i_hs.fctl.ready = read_enable;
-    assign read_i_hs.fctl.pause = !read_enable;
-    assign read_i_hs.fctl.block = !unblock;
+    assign read_i_fctl.ready = read_enable;
+    assign read_i_fctl.pause = !read_enable;
+    assign read_i_fctl.block = !unblock;
 
     assign ptr_frame.flag       = read_i_hs.flag;
     assign ptr_frame.ptr        = ptr_t'(read_i_hs.data);
@@ -108,13 +111,13 @@ module hs_read_mem (
     assign read_o_hs.data = type(read_o_hs.data)'(output_frame.data);
     always_comb begin
         if (read_o_hs.state == hs::BLOCK) begin
-            read_o_hs.lctl = hs::LctlIdle;
+            read_o_lctl = hs::LctlIdle;
         end
         else begin
-            read_o_hs.lctl.start = output_frame.flag.good;
-            read_o_hs.lctl.pause = !output_frame.flag.good;
-            read_o_hs.lctl.close = output_frame.flag.exit;
-            read_o_hs.lctl.abort = output_frame.flag.term;
+            read_o_lctl.start = output_frame.flag.good;
+            read_o_lctl.pause = !output_frame.flag.good;
+            read_o_lctl.close = output_frame.flag.exit;
+            read_o_lctl.abort = output_frame.flag.term;
         end
     end
 

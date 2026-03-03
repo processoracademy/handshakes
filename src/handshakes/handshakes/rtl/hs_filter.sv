@@ -11,8 +11,6 @@ module hs_filter (
 
     `HS_ASSERT_H(flw_hs, ldr_hs)
 
-    assign flw_hs.fctl = '0;
-    assign ldr_hs.lctl = '0;
     always_comb begin
         unique case (ldr_hs.state)
             hs::BLOCK: flw_hs.fdrv.ack = (flw_hs.state == hs::BLOCK) && ldr_hs.fdrv.ack;

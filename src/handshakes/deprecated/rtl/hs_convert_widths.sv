@@ -33,7 +33,7 @@ module hs_convert_widths #(
     function integer ceil_div(integer a, integer b);
         return (a + b - 1) / b;
     endfunction : ceil_div
-    
+
     localparam wide_e WidthTest = (flw_hs.W > ldr_hs.W) ? FollowerIsWider : (flw_hs.W < ldr_hs.W) ? LeaderIsWider : EqualWidth;
     localparam integer NarrowWidth = (WidthTest == FollowerIsWider) ? ldr_hs.W : flw_hs.W;
     localparam integer WideWidth = (WidthTest == FollowerIsWider) ? flw_hs.W : ldr_hs.W;
@@ -71,27 +71,29 @@ module hs_convert_widths #(
     assign clk_en   = flw_hs.clk_en;
     assign sync_rst = flw_hs.sync_rst;
 
-    flw_t flw_word;
-    ldr_t ldr_word;
+    flw_t      flw_word;
+    ldr_t      ldr_word;
 
-    `HS_DRIVE_FLW(flw_hs)
+    hs::fctl_s flw_fctl;
+    `HS_DRIVE_FLW(flw_hs, flw_fctl)
 
-    assign flw_word          = flw_t'(flw_hs.data);
-    assign flw_hs.fctl.ready = !state.valid;
-    assign flw_hs.fctl.pause = state.valid;
-    assign flw_hs.fctl.block = state.block;
+    assign flw_word       = flw_t'(flw_hs.data);
+    assign flw_fctl.ready = !state.valid;
+    assign flw_fctl.pause = state.valid;
+    assign flw_fctl.block = state.block;
 
-    `HS_DRIVE_LDR(ldr_hs)
+    hs::lctl_s ldr_lctl;
+    `HS_DRIVE_LDR(ldr_hs, ldr_lctl)
 
-    assign ldr_hs.data = type(ldr_hs.data)'(ldr_word);
+    assign ldr_hs.data = type (ldr_hs.data)'(ldr_word);
     always_comb begin
-        ldr_hs.lctl.start = state.init && state.valid;
-        ldr_hs.lctl.pause = !state.valid;
+        ldr_lctl.start = state.init && state.valid;
+        ldr_lctl.pause = !state.valid;
         unique case (WidthTest)
-            FollowerIsWider: ldr_hs.lctl.close = state.last && state.valid && (state.ptr == ptr_t'(Entries - 1));
-            default:         ldr_hs.lctl.close = (state.last && state.valid);
+            FollowerIsWider: ldr_lctl.close = state.last && state.valid && (state.ptr == ptr_t'(Entries - 1));
+            default:         ldr_lctl.close = (state.last && state.valid);
         endcase
-        ldr_hs.lctl.abort = state.last && !state.valid;
+        ldr_lctl.abort = state.last && !state.valid;
     end
 
     logic ptr_inc, ptr_rst;

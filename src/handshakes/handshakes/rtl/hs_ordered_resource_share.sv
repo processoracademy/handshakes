@@ -93,9 +93,6 @@ module hs_ordered_resource_share #(
         .ldrv_o   (retired_response_hs.ldrv)
     );
     assign retired_response_hs.data = response_t'(tracked_response_hs.data);
-    assign tracked_response_hs.fctl = '0;
-    assign tracked_port_1_hs.fctl   = '0;
-    assign retired_response_hs.lctl = '0;
 
     hs_demux_index #(
         .Handshakes(Ports)

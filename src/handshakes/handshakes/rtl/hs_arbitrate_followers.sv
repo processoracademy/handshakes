@@ -24,7 +24,6 @@ module hs_arbitrate_followers #(
             assign acks[i]             = ldr_hs[i].fdrv.ack;
             assign ldr_hs[i].ldrv.req  = flw_hs.ldrv.req && mask[i];
             assign ldr_hs[i].ldrv.last = Frameless ? 1'b0 : (flw_hs.ldrv.last && mask[i]);
-            assign ldr_hs[i].lctl      = '0;  // We don't use lctl
             assign ldr_hs[i].data      = flw_hs.data;
         end
     endgenerate
@@ -41,7 +40,6 @@ module hs_arbitrate_followers #(
             advance         = !hs::flw_active(flw_hs.next_state) || !(|mask);
         end
     end
-    assign flw_hs.fctl = '0;  // We don't use fctl
 
     _hs_round_robin #(
         .Width(Followers)
