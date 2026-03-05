@@ -18,12 +18,7 @@ module hs_sync #(
         mask_t block_mask;
         mask_t ignore_req;
 
-        logic first_last, final_last;
-        logic some_blockers;
-
-        assign some_blockers = |block_mask;
-        assign first_last    = (|lasts_i) && !some_blockers;
-        assign final_last    = &(lasts_i | block_mask);
+        wire   some_blockers = |block_mask;
 
         for (g = 0; g < Handshakes; g = g + 1) begin : g_connect
             hs::fprobe_s fprobe_g;
@@ -87,9 +82,16 @@ module hs_sync #(
                     ldrv_o.last = 1'b0;
                 end
                 hs::Truncate: begin
+                    logic first_last;
+                    logic abort, exit;
+                    abort       = |(lasts_i & ~reqs_i);
+                    exit        = (|lasts_i) && (&reqs_i);
+                    first_last  = (abort || exit) && !some_blockers;
                     ldrv_o.last = first_last;
                 end
                 hs::FrameSync: begin
+                    logic final_last;
+                    final_last  = &(lasts_i | block_mask);
                     ldrv_o.last = final_last;
                 end
             endcase
