@@ -87,7 +87,7 @@ module hs_fifo #(
 
             entry_long_s read;
             assign read              = read_entry;
-            assign ldr_hs.data       = type(ldr_hs.data)'(read.data);
+            assign ldr_hs.data       = `HS_CAST(ldr_hs, read.data);
             assign ldr_hs.lctl.start = ldr_valid;
             assign ldr_hs.lctl.pause = !ldr_valid;
             assign ldr_hs.lctl.close = read.close;
@@ -124,7 +124,7 @@ module hs_fifo #(
 
             entry_short_s read;
             assign read              = read_entry;
-            assign ldr_hs.data       = type(ldr_hs.data)'(read.data);
+            assign ldr_hs.data       = `HS_CAST(ldr_hs, read.data);
             assign ldr_hs.lctl.start = ldr_valid;
             assign ldr_hs.lctl.pause = !ldr_valid;
             assign ldr_hs.lctl.close = read.close;
