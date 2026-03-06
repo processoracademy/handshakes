@@ -26,6 +26,6 @@ module legacy_eot_to_hs_flw (
     assign internal_1_hs.fdrv.ack = ack_i && (internal_1_hs.state != hs::BLOCK);
     assign eot_o  = internal_1_hs.ldrv.last;  // We have guaranteed no aborts so this should map correctly.
     assign req_o  = internal_1_hs.ldrv.req;
-    assign data_o = type(flw_hs.data)'(internal_1_hs.data);
+    assign data_o = `HS_CAST(flw_hs, internal_1_hs.data);
 
 endmodule : legacy_eot_to_hs_flw

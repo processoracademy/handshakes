@@ -29,7 +29,7 @@ module hs_arbitrate_leaders #(
             assign flw_data[i]        = data_t'(flw_hs[i].data);
             assign flw_hs[i].fdrv.ack = ldr_hs.fdrv.ack && mask[i];
         end
-        assign ldr_hs.data = type (ldr_hs.data)'(flw_data[addr]);
+        assign ldr_hs.data = `HS_CAST(ldr_hs, flw_data[addr]);
     endgenerate
 
     assign ldr_hs.ldrv.req  = |(reqs & mask);

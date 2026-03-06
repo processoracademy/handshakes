@@ -108,7 +108,7 @@ module hs_read_mem (
 
     assign output_frame   = buffer_frame.flag.good ? buffer_frame : read_frame;
 
-    assign read_o_hs.data = type(read_o_hs.data)'(output_frame.data);
+    assign read_o_hs.data = `HS_CAST(read_o_hs, output_frame.data);
     always_comb begin
         if (read_o_hs.state == hs::BLOCK) begin
             read_o_lctl = hs::LctlIdle;

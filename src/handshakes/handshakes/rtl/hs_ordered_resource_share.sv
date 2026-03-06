@@ -71,7 +71,7 @@ module hs_ordered_resource_share #(
     hs_replace_data hs_replace_data_tracked_req (
         .flw_hs(deref_tracked_req_hs),
         .ldr_hs(tracked_request_hs),
-        .data_i(type (tracked_request_hs.data)'(deref_tracked_req_hs.data))
+        .data_i(`HS_CAST(tracked_request_hs, deref_tracked_req_hs.data))
     );
 
     hs_io #(.T(port_t)) tracked_port_1_hs (.*);
