@@ -32,7 +32,7 @@ module hs_capture_on_rising_edge #(
                 end
             end
             assign ldr_lctl.start = mono;
-            assign ldr_hs.data    = mono ? data_i : type(ldr_hs.data)'(buffer);
+            assign ldr_hs.data    = mono ? data_i : `HS_CAST(ldr_hs, buffer);
         end
         else begin : g_not_forwarded
             logic start;

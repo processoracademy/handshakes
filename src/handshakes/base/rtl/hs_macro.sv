@@ -1,6 +1,11 @@
 `ifndef HS_MACRO_
 `define HS_MACRO_
 
+`define HS_CAST(from_hs, to_data) \
+`ifdef SV2V (from_hs.W)'(to_data) \
+`else type (from_hs.data)'(to_data) \
+`endif
+
 // Macro: HS_ASSERT_W
 // Assert that the width of a handshake is the same as provided width.
 // On failure, a compilation-time fatal error is emitted

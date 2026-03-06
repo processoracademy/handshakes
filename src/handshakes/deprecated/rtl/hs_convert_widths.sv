@@ -85,7 +85,7 @@ module hs_convert_widths #(
     hs::lctl_s ldr_lctl;
     `HS_DRIVE_LDR(ldr_hs, ldr_lctl)
 
-    assign ldr_hs.data = type (ldr_hs.data)'(ldr_word);
+    assign ldr_hs.data = `HS_CAST(ldr_hs, ldr_word);
     always_comb begin
         ldr_lctl.start = state.init && state.valid;
         ldr_lctl.pause = !state.valid;
