@@ -1,5 +1,5 @@
 CAPI=2:
-name: "processoracademy:handshakes:handshakeCompat:0.5.1"
+name: "processoracademy:handshakes:handshakeCompat:0.5.2"
 description: "Legacy EOT handshake compatibility modules"
 
 filesets:
