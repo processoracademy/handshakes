@@ -51,7 +51,7 @@ module hs_frame_switch #(
             hs_replace_data hs_replace_data (
                 .flw_hs(destination_hs[i]),
                 .ldr_hs(ldr_hs[i]),
-                .data_i(type(ldr_hs[i].data)'(destination_hs[i].data.data))
+                .data_i(`HS_CAST(ldr_hs[i], destination_hs[i].data.data))
             );
         end
     endgenerate

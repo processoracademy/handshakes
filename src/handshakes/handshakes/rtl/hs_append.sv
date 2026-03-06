@@ -38,7 +38,7 @@ module hs_append (
     hs_replace_data hs_replace_data_appended (
         .flw_hs(internal_hs),
         .ldr_hs(appended_hs),
-        .data_i(type (appended_hs.data)'(internal_hs.data))
+        .data_i(`HS_CAST(appended_hs, internal_hs.data))
     );
 
 endmodule : hs_append

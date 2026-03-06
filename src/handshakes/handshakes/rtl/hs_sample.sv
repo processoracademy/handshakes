@@ -59,7 +59,7 @@ module hs_sample #(
     hs_replace_data hs_replace_data_out (
         .flw_hs(internal_1_hs),
         .ldr_hs(ldr_hs),
-        .data_i(type (ldr_hs.data)'(internal_1_hs.data))
+        .data_i(`HS_CAST(ldr_hs, internal_1_hs.data))
     );
 
 endmodule : hs_sample

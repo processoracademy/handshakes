@@ -68,7 +68,7 @@ module hs_append_generic #(
         ack             = '0;
         ack[sel]        = ldr_hs.fdrv.ack;
         ldr_hs.ldrv.req = req[sel];
-        ldr_hs.data     = type (ldr_hs.data)'(data[sel]);
+        ldr_hs.data     = `HS_CAST(ldr_hs, data[sel]);
 
         if (retire || reset_hs.flag.good) begin
             ldr_hs.ldrv.req  = 1'b0;
