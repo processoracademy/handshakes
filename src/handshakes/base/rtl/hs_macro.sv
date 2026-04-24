@@ -14,7 +14,7 @@
 //  hs     - <hs_io> interface to check the data width of
 //  data_w - width value to check against
 `define HS_ASSERT_W(hs, data_w) `ifndef SV2V \
-initial assert (hs.W == data_w) else $warning("%s width (%0d) must equal %s (%0d)",`"hs`",hs.W,`"data_w`",data_w); \
+initial assert (hs.W == data_w) else $fatal(1,"%s width (%0d) must equal %s (%0d)",`"hs`",hs.W,`"data_w`",data_w); \
 `endif
 
 // Macro: HS_ASSERT_T
@@ -29,7 +29,7 @@ initial assert \
 `ifdef VERILATOR (type(hs.data) == type(type_t)) \
 `else (hs.W == $bits(type_t)) \
 `endif \
-else $warning("handshake %s.data's %0d-bit type (%s) must equal %0d-bit type %s (%s)",`"hs`",hs.W,hs.Typename,$bits(type_t),`"type_t`",$typename(type_t)); \
+else $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal %0d-bit type %s (%s)",`"hs`",hs.W,hs.Typename,$bits(type_t),`"type_t`",$typename(type_t)); \
 `endif
 
 // Macro: HS_ASSERT_H
@@ -44,7 +44,7 @@ initial assert \
 `ifdef VERILATOR (type(hs_0.data) == type(hs_1.data)) \
 `else (hs_0.W == hs_1.W) \
 `endif \
-else $warning("handshake %s.data's %0d-bit type (%s) must equal handshake %s.data's %0d-bit type %s",`"hs_0`",hs_0.W,hs_0.Typename,`"hs_1`",hs_1.W,hs_1.Typename); \
+else $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal handshake %s.data's %0d-bit type %s",`"hs_0`",hs_0.W,hs_0.Typename,`"hs_1`",hs_1.W,hs_1.Typename); \
 `endif
 
 `define HS_EXPECT_MIN(hs, min) `ifndef SV2V `ifdef SIM_DEBUG \
