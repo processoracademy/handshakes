@@ -1,5 +1,5 @@
 CAPI=2:
-name: "processoracademy:handshakes:handshakes:0.5.3"
+name: "processoracademy:handshakes:handshakes:0.5.4"
 description: ""
 
 filesets:
@@ -35,6 +35,7 @@ filesets:
       - rtl/hs_unblock.sv
       - rtl/hs_unframe.sv
       - rtl/hs_sync.sv
+      - rtl/hs_squish.sv
     file_type: systemVerilogSource
 
 targets:
