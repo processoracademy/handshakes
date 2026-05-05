@@ -35,6 +35,7 @@ filesets:
       - rtl/hs_unblock.sv
       - rtl/hs_unframe.sv
       - rtl/hs_sync.sv
+      - rtl/hs_squish.sv
     file_type: systemVerilogSource
 
 targets:
