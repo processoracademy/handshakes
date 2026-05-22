@@ -21,6 +21,7 @@ filesets:
       - rtl/hs_broadcast.sv
       - rtl/hs_buffer.sv
       - rtl/hs_register.sv
+      - rtl/hs_serialize.sv
       - rtl/hs_capture_on_rising_edge.sv
       - rtl/hs_demux_index.sv
       - rtl/hs_demux_mask.sv
