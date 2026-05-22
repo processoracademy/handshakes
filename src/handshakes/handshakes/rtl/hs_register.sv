@@ -45,7 +45,7 @@ module hs_register #(
     always_comb begin
         unique case (flw_hs.state)
             hs::READY, hs::PROBE, hs::MULTI: begin
-                flw_hs.fdrv.ack = ldr_hs.fdrv.ack || !valid; // make sure to ack on an empty buffer
+                flw_hs.fdrv.ack = ldr_hs.fdrv.ack || !valid;  // make sure to ack on an empty buffer
             end
             hs::BLOCK: begin
                 flw_hs.fdrv.ack = ldr_hs.state != hs::READY;
@@ -59,6 +59,6 @@ module hs_register #(
     assign lctl.start = ldr_valid;
     assign lctl.pause = !ldr_valid;
     assign lctl.close = last && valid;
-    assign lctl.abort = AbsorbAborts ? 1'b0 : (last && !valid);
+    assign lctl.abort = last && (!valid) && (!AbsorbAborts);
 
 endmodule : hs_register

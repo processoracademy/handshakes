@@ -12,7 +12,7 @@ module hs_serialize #(
 
     initial begin
         assert ((wide_hs.W / narrow_hs.W) * narrow_hs.W == wide_hs.W)
-        else $fatal(1, "wide_hs width %0d must be a multiple of narrow_hs width (%0d)", wide_hs.W, narrow_hs.W);
+        else $fatal(1, "wide_hs width %0d must be a multiple of narrow_hs width %0d", wide_hs.W, narrow_hs.W);
         assert (wide_hs.W > narrow_hs.W)
         else $fatal(1, "wide_hs width %0d must be greater than narrow_hs width %0d", wide_hs.W, narrow_hs.W);
     end
