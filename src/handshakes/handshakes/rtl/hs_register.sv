@@ -55,10 +55,10 @@ module hs_register #(
 
     hs::lctl_s lctl;
     assign ldr_hs.ldrv = hs::drive_ldr(ldr_hs.state, lctl);
-    wire ldr_valid = AbsorbAborts ? (valid && (flw_hs.ldrv.req || last)) : valid;
+    wire ldr_valid = valid && (flw_hs.ldrv.req || last || !AbsorbAborts);
     assign lctl.start = ldr_valid;
     assign lctl.pause = !ldr_valid;
     assign lctl.close = last && valid;
-    assign lctl.abort = last && (!valid) && (!AbsorbAborts);
+    assign lctl.abort = last && (!valid);
 
 endmodule : hs_register

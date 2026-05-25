@@ -92,12 +92,12 @@ module hs_deserialize #(
     hs::lctl_s lctl;
     assign ldrv_o = hs::drive_ldr(lprobe_i.state, lctl);
     wire empty = (length_o == '0);
-    wire full = (length_o == WordsMax) && (AbsorbAborts && (narrow_hs.ldrv.req || last));
+    wire full = (length_o == WordsMax) && (narrow_hs.ldrv.req || last || !AbsorbAborts);
     wire valid = full || (last && !empty);
     assign lctl.start = valid;
     assign lctl.pause = !valid;
     assign lctl.close = last && !empty;
-    assign lctl.abort = last && empty && !AbsorbAborts;
+    assign lctl.abort = last && empty;
 
 endmodule : hs_deserialize
 
