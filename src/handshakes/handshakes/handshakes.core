@@ -28,6 +28,7 @@ filesets:
       - rtl/hs_frame_switch.sv
       - rtl/hs_init_snapshot.sv
       - rtl/hs_iterate.sv
+      - rtl/hs_memory.sv
       - rtl/hs_ordered_resource_share.sv
       - rtl/hs_override_fctl.sv
       - rtl/hs_read_mem.sv
