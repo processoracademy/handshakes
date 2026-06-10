@@ -21,10 +21,14 @@ interface hs_io #(
     input logic sync_rst
 );
     localparam integer unsigned W = $bits(T);
-    `ifndef SV2V localparam string Typename = $typename(T); `endif
-    `ifdef VERILATOR typedef T data_t;
-    `else localparam type data_t = T;
-    `endif
+`ifndef SV2V
+    localparam string Typename = $typename(T);
+`endif
+`ifdef VERILATOR
+    typedef T data_t;
+`else
+    localparam type data_t = T;
+`endif
 
     // About: Parameter Type Support in Quartus lite/std
     // Quartus std/lite does not support parameter type. Likely until they support SV 1800-2012
@@ -78,6 +82,7 @@ interface hs_io #(
             end
             prev_flag <= flag;
             state     <= next_state;
+            if (flag.term) $warning("Deprecated handshake abort detected! Expect undefined behaviour.");
         end
     end
 
