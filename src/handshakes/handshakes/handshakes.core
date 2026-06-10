@@ -33,6 +33,7 @@ filesets:
       - rtl/hs_override_fctl.sv
       - rtl/hs_read_mem.sv
       - rtl/hs_reflect.sv
+      - rtl/hs_reflect_vec.sv
       - rtl/hs_reframe.sv
       - rtl/hs_register.sv
       - rtl/hs_replace_data.sv
