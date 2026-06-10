@@ -1,7 +1,6 @@
 CAPI=2:
 name: "processoracademy:handshakes:handshakes:0.5.8"
 description: ""
-
 filesets:
   rtl:
     depend:
@@ -41,7 +40,6 @@ filesets:
       - rtl/hs_unblock.sv
       - rtl/hs_unframe.sv
     file_type: systemVerilogSource
-
 targets:
   default:
     filesets:
