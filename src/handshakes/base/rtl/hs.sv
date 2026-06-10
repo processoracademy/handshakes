@@ -112,7 +112,7 @@ package hs;
     function flag_s get_flags(input logic req, input logic ack, input logic last, input state_e state);
         get_flags.init = req && ack && !hs::flw_active(state);
         get_flags.good = req && ack;
-        get_flags.busy = req && ack || hs::flw_active(state);
+        get_flags.busy = (req && ack) || hs::flw_active(state);
         get_flags.live = req || (state != hs::READY);
         get_flags.body = req && ack && (state == hs::MULTI);
         get_flags.exit = (last && req && ack) || (last && (state == hs::MULTI) && !req);  // Second OR term is flag.term
