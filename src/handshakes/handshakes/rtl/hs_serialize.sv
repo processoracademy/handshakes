@@ -48,9 +48,7 @@ module hs_serialize #(
     );
 
     hs_io #(.T(wide_s)) register_hs (.*);
-    hs_register #(
-        .AbsorbAborts(AbsorbAborts)
-    ) hs_register (
+    hs_register hs_register (
         .flw_hs(filtered_hs),
         .ldr_hs(register_hs)
     );

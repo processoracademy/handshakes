@@ -1,8 +1,8 @@
-`include "hs_macro.sv"
-module hs_register (
+module hs_buffer (
     hs_io.flw flw_hs,
     hs_io.ldr ldr_hs
 );
+    initial $warning("hs_buffer uses deprecated abort-preserving behaviour! Use hs_register instead.");
     wire clk = flw_hs.clk;
     wire clk_en = flw_hs.clk_en;
     wire sync_rst = flw_hs.sync_rst;
@@ -46,20 +46,16 @@ module hs_register (
                 flw_hs.fdrv.ack = ldr_hs.fdrv.ack || !valid;  // make sure to ack on an empty buffer
             end
             hs::BLOCK: begin
-                flw_hs.fdrv.ack = valid || (ldr_hs.state != hs::READY);
+                flw_hs.fdrv.ack = ldr_hs.state != hs::READY;
             end
         endcase
     end
 
     hs::lctl_s lctl;
     assign ldr_hs.ldrv = hs::drive_ldr(ldr_hs.state, lctl);
-    // Once aborts are compeletely removed from the project,
-    // we can assign ldr_valid = valid;
-    // This will save 1 transaction's worth of latency.
-    wire ldr_valid = valid && (flw_hs.ldrv.req || last);
-    assign lctl.start = ldr_valid;
-    assign lctl.pause = !ldr_valid;
-    assign lctl.close = last && valid;
-    assign lctl.abort = 1'b0;
+    assign lctl.start  = valid;
+    assign lctl.pause  = !valid;
+    assign lctl.close  = last && valid;
+    assign lctl.abort  = last && !valid;
 
-endmodule : hs_register
+endmodule : hs_buffer
