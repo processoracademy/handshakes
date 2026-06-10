@@ -1,8 +1,7 @@
 `include "hs_macro.sv"
 module hs_deserialize #(
-    parameter integer unsigned WideW        = 0,
-    parameter logic            BigEndian    = 1'b0,
-    parameter logic            AbsorbAborts = 1'b0
+    parameter integer unsigned WideW     = 0,
+    parameter logic            BigEndian = 1'b0
 ) (
            hs_io.flw                                                         narrow_hs,
     output logic        [          (WideW/narrow_hs.W)-1:0][narrow_hs.W-1:0] data_o,
@@ -92,12 +91,15 @@ module hs_deserialize #(
     hs::lctl_s lctl;
     assign ldrv_o = hs::drive_ldr(lprobe_i.state, lctl);
     wire empty = (length_o == '0);
-    wire full = (length_o == WordsMax) && (narrow_hs.ldrv.req || last || !AbsorbAborts);
+    // Once aborts are compeletely removed from the project,
+    // we can assign full = (length_0 == WordsMax);
+    // This will save 1 transaction's worth of latency.
+    wire full = (length_o == WordsMax) && (narrow_hs.ldrv.req || last);
     wire valid = full || (last && !empty);
     assign lctl.start = valid;
     assign lctl.pause = !valid;
     assign lctl.close = last && !empty;
-    assign lctl.abort = last && empty;
+    assign lctl.abort = 1'b0;
 
 endmodule : hs_deserialize
 

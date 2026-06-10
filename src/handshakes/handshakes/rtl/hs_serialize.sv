@@ -1,8 +1,7 @@
 `include "hs_macro.sv"
 module hs_serialize #(
-    parameter integer unsigned WideW        = 0,
-    parameter logic            BigEndian    = 1'b0,
-    parameter logic            AbsorbAborts = 1'b0
+    parameter integer unsigned WideW     = 0,
+    parameter logic            BigEndian = 1'b0
 ) (
            hs_io.ldr                                                         narrow_hs,
     input  logic        [          (WideW/narrow_hs.W)-1:0][narrow_hs.W-1:0] data_i,
@@ -100,7 +99,7 @@ module hs_serialize #(
     assign lctl.start     = valid;
     assign lctl.pause     = !valid;
     assign lctl.close     = ptr_end && last && valid;
-    assign lctl.abort     = last && !valid;
+    assign lctl.abort     = 1'b0;
 
 endmodule : hs_serialize
 
