@@ -82,7 +82,6 @@ interface hs_io #(
             end
             prev_flag <= flag;
             state     <= next_state;
-            if (flag.term) $warning("Deprecated handshake abort detected! Expect undefined behaviour.");
         end
     end
 
