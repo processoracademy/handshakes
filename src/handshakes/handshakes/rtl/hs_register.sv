@@ -1,7 +1,5 @@
 `include "hs_macro.sv"
-module hs_register #(
-    parameter logic AbsorbAborts = 1'b0
-) (
+module hs_register (
     hs_io.flw flw_hs,
     hs_io.ldr ldr_hs
 );
@@ -55,10 +53,13 @@ module hs_register #(
 
     hs::lctl_s lctl;
     assign ldr_hs.ldrv = hs::drive_ldr(ldr_hs.state, lctl);
-    wire ldr_valid = valid && (flw_hs.ldrv.req || last || !AbsorbAborts);
+    // Once aborts are compeletely removed from the project,
+    // we can assign ldr_valid = valid;
+    // This will save 1 transaction's worth of latency.
+    wire ldr_valid = valid && (flw_hs.ldrv.req || last);
     assign lctl.start = ldr_valid;
     assign lctl.pause = !ldr_valid;
     assign lctl.close = last && valid;
-    assign lctl.abort = last && (!valid);
+    assign lctl.abort = 1'b0;
 
 endmodule : hs_register

@@ -4,5 +4,6 @@ module hs_absorb_aborts (
     hs_io.flw flw_hs,
     hs_io.ldr ldr_hs
 );
-    hs_register #(.AbsorbAborts(1'b1)) hs_register (.*);
+    initial $warning("hs_absorb_aborts is a deprecated alias for hs_register (aborts are also deprecated!)");
+    hs_register hs_register (.*);
 endmodule : hs_absorb_aborts
