@@ -48,7 +48,7 @@ module hs_register #(
                 flw_hs.fdrv.ack = ldr_hs.fdrv.ack || !valid;  // make sure to ack on an empty buffer
             end
             hs::BLOCK: begin
-                flw_hs.fdrv.ack = ldr_hs.state != hs::READY;
+                flw_hs.fdrv.ack = valid || (ldr_hs.state != hs::READY);
             end
         endcase
     end
