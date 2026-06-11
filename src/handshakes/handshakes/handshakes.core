@@ -20,6 +20,8 @@ filesets:
       - rtl/hs_capture_on_rising_edge.sv
       - rtl/hs_demux_index.sv
       - rtl/hs_demux_mask.sv
+      - rtl/hs_demux_mask_old.sv
+      - rtl/hs_demux_mask_new.sv
       - rtl/hs_deserialize.sv
       - rtl/hs_fifo.sv
       - rtl/hs_filter.sv

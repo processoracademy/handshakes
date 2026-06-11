@@ -1,7 +1,8 @@
 `include "hs_macro.sv"
 module hs_ordered_resource_share #(
     parameter integer Ports           = 2,
-    parameter integer TrackedRequests = 4
+    parameter integer TrackedRequests = 4,
+    parameter logic   UseNewDemux     = 1'b0
 ) (
     hs_io.flw request_port_hs    [Ports],
     hs_io.ldr response_port_hs   [Ports],
@@ -95,7 +96,8 @@ module hs_ordered_resource_share #(
     assign retired_response_hs.data = response_t'(tracked_response_hs.data);
 
     hs_demux_index #(
-        .Handshakes(Ports)
+        .Handshakes (Ports),
+        .UseNewDemux(UseNewDemux)
     ) hs_demux_index (
         .flw_hs (retired_response_hs),
         .ldr_hs (deref_resp_port_hs),

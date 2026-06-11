@@ -1,6 +1,7 @@
 `include "hs_macro.sv"
 module hs_frame_switch #(
-    parameter integer Handshakes = 2
+    parameter integer Handshakes  = 2,
+    parameter logic   UseNewDemux = 1'b0
 ) (
     hs_io.flw flw_hs,
     hs_io.flw index_hs,
@@ -38,7 +39,8 @@ module hs_frame_switch #(
 
     hs_io #(.T(frame_s)) destination_hs[Handshakes] (.*);
     hs_demux_index #(
-        .Handshakes(Handshakes)
+        .Handshakes (Handshakes),
+        .UseNewDemux(UseNewDemux)
     ) hs_demux_index (
         .flw_hs (source_hs),
         .ldr_hs (destination_hs),
