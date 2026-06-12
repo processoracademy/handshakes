@@ -1,7 +1,7 @@
 `include "hs_macro.sv"
 module hs_demux_index #(
     parameter integer Handshakes       = 2,
-    parameter logic   UseNewDemux      = 1'b0,
+    parameter logic   UseNewDemux      = 1'b1,
     parameter integer _HandshakesWidth = Handshakes == 1 ? 1 : $clog2(Handshakes)
 ) (
           hs_io.flw                        flw_hs,

@@ -1,7 +1,7 @@
 `include "hs_macro.sv"
 module hs_frame_switch #(
     parameter integer Handshakes  = 2,
-    parameter logic   UseNewDemux = 1'b0
+    parameter logic   UseNewDemux = 1'b1
 ) (
     hs_io.flw flw_hs,
     hs_io.flw index_hs,

@@ -20,7 +20,7 @@
 **/
 module hs_demux_mask #(
     parameter integer Handshakes  = 2,
-    parameter logic   UseNewDemux = 1'b0
+    parameter logic   UseNewDemux = 1'b1
 ) (
           hs_io.flw                  flw_hs,
           hs_io.ldr                  ldr_hs[Handshakes],

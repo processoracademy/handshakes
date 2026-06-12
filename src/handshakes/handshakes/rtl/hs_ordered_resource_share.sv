@@ -2,7 +2,7 @@
 module hs_ordered_resource_share #(
     parameter integer Ports           = 2,
     parameter integer TrackedRequests = 4,
-    parameter logic   UseNewDemux     = 1'b0
+    parameter logic   UseNewDemux     = 1'b1
 ) (
     hs_io.flw request_port_hs    [Ports],
     hs_io.ldr response_port_hs   [Ports],
