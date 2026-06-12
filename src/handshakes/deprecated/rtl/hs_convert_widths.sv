@@ -12,7 +12,9 @@
 **/
 
 `include "hs_macro.sv"
-module hs_convert_widths (
+module hs_convert_widths #(
+    parameter logic BigEndian = 1'b0
+) (
     hs_io.flw flw_hs,
     hs_io.ldr ldr_hs
 );
@@ -55,7 +57,8 @@ module hs_convert_widths (
             FollowerIsWider: begin : g_wide_to_narrow
                 hs_io #(.T(logic [ldr_hs.W-1:0])) internal_hs (.*);
                 hs_serialize #(
-                    .WideW(WideWidth)
+                    .WideW    (WideWidth),
+                    .BigEndian(BigEndian)
                 ) hs_serialize (
                     .data_i   (flw_hs.data),
                     .length_i (entries_t'(Entries)),
@@ -72,7 +75,8 @@ module hs_convert_widths (
             LeaderIsWider: begin : g_narrow_to_wide
                 logic [ldr_hs.W-1:0] ldr_data;
                 hs_deserialize #(
-                    .WideW(WideWidth)
+                    .WideW    (WideWidth),
+                    .BigEndian(BigEndian)
                 ) hs_deserialize (
                     .narrow_hs(flw_hs),
                     .data_o   (ldr_data),
