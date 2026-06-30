@@ -56,6 +56,7 @@ module hs_register (
     // Once aborts are compeletely removed from the project,
     // we can assign ldr_valid = valid;
     // This will save 1 transaction's worth of latency.
+    // TODO: cleanup hs_serialize once we drop abort absorption
     wire ldr_valid = valid && (flw_hs.ldrv.req || last);
     assign lctl.start = ldr_valid;
     assign lctl.pause = !ldr_valid;
