@@ -1,8 +1,7 @@
 `include "hs_macro.sv"
 module hs_serialize #(
-    parameter integer unsigned WideW        = 0,
-    parameter logic            BigEndian    = 1'b0,
-    parameter logic            AbsorbAborts = 1'b0
+    parameter integer unsigned WideW     = 0,
+    parameter logic            BigEndian = 1'b0
 ) (
            hs_io.ldr                                                         narrow_hs,
     input  logic        [          (WideW/narrow_hs.W)-1:0][narrow_hs.W-1:0] data_i,
@@ -43,14 +42,14 @@ module hs_serialize #(
     hs_filter hs_filter_zero_length (
         .flw_hs(wide_hs),
         .ldr_hs(filtered_hs),
-        .pass_i(length_gt_0),
-        .drop_o()
+        .pass_i(length_gt_0)
     );
 
     hs_io #(.T(wide_s)) register_hs (.*);
-    hs_register #(
-        .AbsorbAborts(AbsorbAborts)
-    ) hs_register (
+    // We have to use hs_buffer until abort support is removed completely,
+    // as hs_register has a 2-transaciton abort absorption which creates
+    // timing and lockup issues with this logic.
+    hs_buffer hs_buffer (
         .flw_hs(filtered_hs),
         .ldr_hs(register_hs)
     );
@@ -102,7 +101,7 @@ module hs_serialize #(
     assign lctl.start     = valid;
     assign lctl.pause     = !valid;
     assign lctl.close     = ptr_end && last && valid;
-    assign lctl.abort     = last && !valid;
+    assign lctl.abort     = last && !valid; // TODO: set to 0 once we drop hs_buffer
 
 endmodule : hs_serialize
 

@@ -1,13 +1,11 @@
 CAPI=2:
-name: "processoracademy:handshakes:handshakes:0.5.8"
+name: "processoracademy:handshakes:handshakes:0.6.0"
 description: ""
-
 filesets:
   rtl:
     depend:
       - processoracademy:handshakes:base
     files:
-      - rtl/hs_absorb_aborts.sv
       - rtl/hs_alternate.sv
       - rtl/hs_alternate_generic.sv
       - rtl/hs_append.sv
@@ -18,7 +16,6 @@ filesets:
       - rtl/hs_atomize.sv
       - rtl/hs_bram.sv
       - rtl/hs_broadcast.sv
-      - rtl/hs_buffer.sv
       - rtl/hs_capture_on_rising_edge.sv
       - rtl/hs_demux_index.sv
       - rtl/hs_demux_mask.sv
@@ -43,7 +40,6 @@ filesets:
       - rtl/hs_unblock.sv
       - rtl/hs_unframe.sv
     file_type: systemVerilogSource
-
 targets:
   default:
     filesets:
