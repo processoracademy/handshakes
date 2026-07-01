@@ -42,8 +42,7 @@ module hs_serialize #(
     hs_filter hs_filter_zero_length (
         .flw_hs(wide_hs),
         .ldr_hs(filtered_hs),
-        .pass_i(length_gt_0),
-        .drop_o()
+        .pass_i(length_gt_0)
     );
 
     hs_io #(.T(wide_s)) register_hs (.*);
