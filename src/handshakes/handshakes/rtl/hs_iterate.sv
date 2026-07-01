@@ -61,7 +61,7 @@ module hs_iterate (
     assign lctl.start       = register_hs.ldrv.req;
     assign lctl.pause       = !register_hs.ldrv.req;
     assign lctl.close       = register_hs.ldrv.last && iterator_end;
-    assign lctl.abort       = register_hs.ldrv.last && !register_hs.ldrv.req;
+    assign lctl.abort       = 1'b0;
     assign iterator_hs.data = `HS_CAST(iterator_hs, iter_fwd);
 
 endmodule : hs_iterate
