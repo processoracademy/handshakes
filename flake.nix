@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     moppkgs.url = "github:Mop-u/moppkgs";
-    fusesoc-flake.url = "github:Mop-u/fusesoc-flake";
+    fusesoc-flake.url = "github:Mop-u/fusesoc-flake/v0.3.0";
   };
 
   outputs =
@@ -13,67 +13,75 @@
       inherit (nixpkgs) lib;
       forEachSystem = systems: f: builtins.foldl' (lib.recursiveUpdate) { } (map f systems);
     in
-    (forEachSystem [ "x86_64-linux" ] (
-      system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        };
-        inherit (inputs.moppkgs.packages.${system})
-          slang-server
-          ;
-        inherit (inputs.fusesoc-flake.packages.${system})
-          fusesocLib
-          mkFusesocCore
-          runFusesocCore
-          ;
+    (forEachSystem
+      [
+        "aarch64-darwin"
+        "aarch64-linux"
+        "i686-linux"
+        "x86_64-darwin"
+        "x86_64-linux"
+      ]
+      (
+        system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          inherit (inputs.moppkgs.packages.${system}) slang-server;
+          inherit (inputs.fusesoc-flake.packages.${system}) fusesoc;
 
-        slangConf = pkgs.writeText "server.json" (
-          builtins.toJSON {
-            flags = lib.concatStringsSep " " [
-              "-Weverything"
-              "-Wno-empty-output-connection"
-              "-DSIM_DEBUG"
-              "-DSV2V"
-              "-I ${./src/handshakes/base/rtl}"
-            ];
-            index = [
-              {
-                dirs = [ "src" ];
-                excludeDirs = [
-                  "build"
-                  ".direnv"
-                ];
-              }
-            ];
-          }
-        );
+          externalCores = fusesoc.lib.mkCoreSet [ fusesoc.lib.cores.""."".fifo."1.3-r1" ];
 
-      in
-      {
-        devShells.${system}.default =
-          (runFusesocCore (finalAttrs: {
-            core = fusesocLib.readYAML ./src/handshakes/handshakes/handshakes.core;
-            target = "default";
-            dependencies = [ ./src/handshakes ];
-            nativeBuildInputs = [
+          coreSet = fusesoc.lib.extendCoreSet externalCores (fusesoc.lib.importCores ./src);
+
+          slangConf = pkgs.writeText "server.json" (
+            builtins.toJSON {
+              flags = lib.concatStringsSep " " [
+                "-Weverything"
+                "-Wno-empty-output-connection"
+                "-DSIM_DEBUG"
+                "-DSV2V"
+                "-I src/handshakes/base/rtl"
+              ];
+              index = [
+                {
+                  dirs = [
+                    "src"
+                  ]
+                  ++ (map (x: "${x}") (fusesoc.lib.toCoreList externalCores));
+                  excludeDirs = [
+                    "build"
+                    ".direnv"
+                  ];
+                }
+              ];
+            }
+          );
+
+        in
+        {
+          legacyPackages.${system}.fusesocCores = coreSet;
+          packages.${system}.default = fusesoc.lib.dumpCores coreSet;
+          devShells.${system}.default = pkgs.mkShell {
+            packages = [
+              (fusesoc.lib.wrapFusesoc coreSet)
               slang-server
               pkgs.verible
             ];
-          })).overrideAttrs
-            (
-              final: prev: {
-                shellHook =
-                  (prev.shellHook or "")
-                  + "\n"
-                  + ''
-                    mkdir -p .slang
-                    rm -f .slang/server.json
-                    ln -s ${slangConf} .slang/server.json
-                  '';
-              }
-            );
-      }
-    ));
+            shellHook = ''
+              export OBJCACHE=ccache
+              mkdir -p .slang
+              ln -vfs ${slangConf} .slang/server.json
+            '';
+          };
+          checks.${system} = {
+            inherit ((coreSet.""."".fifo.withTools [ pkgs.iverilog ]).run)
+              fifo_fwft_tb
+              dual_clock_fifo_tb
+              ;
+          };
+        }
+      )
+    );
 }
