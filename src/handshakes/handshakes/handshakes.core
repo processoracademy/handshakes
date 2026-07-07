@@ -5,6 +5,7 @@ filesets:
   rtl:
     depend:
       - processoracademy:handshakes:base
+      - ::fifo:1.3
     files:
       - rtl/hs_alternate.sv
       - rtl/hs_alternate_generic.sv
@@ -17,6 +18,7 @@ filesets:
       - rtl/hs_bram.sv
       - rtl/hs_broadcast.sv
       - rtl/hs_capture_on_rising_edge.sv
+      - rtl/hs_cdc_fifo.sv
       - rtl/hs_demux_index.sv
       - rtl/hs_demux_mask.sv
       - rtl/hs_deserialize.sv
