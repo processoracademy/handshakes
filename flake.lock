@@ -2,32 +2,55 @@
   "nodes": {
     "fusesoc-flake": {
       "inputs": {
+        "moppkgs": "moppkgs",
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1781009737,
-        "narHash": "sha256-00qMcVpS4ZO1AVS2Lk+wXkk4wl3dZG057wTvfCyc/cI=",
+        "lastModified": 1784042624,
+        "narHash": "sha256-auCI9PiG5v1s2kEnqcIKNrGx4CejjLUBuGiwq+zeSK0=",
         "owner": "Mop-u",
         "repo": "fusesoc-flake",
-        "rev": "852f92ea424f1323f518cb985c3237749e71fc26",
+        "rev": "e462752f28294f00ae65f76a2c9227a397c8094b",
         "type": "github"
       },
       "original": {
         "owner": "Mop-u",
+        "ref": "v0.3.0",
         "repo": "fusesoc-flake",
         "type": "github"
       }
     },
     "moppkgs": {
       "inputs": {
+        "nixpkgs": [
+          "fusesoc-flake",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1782588036,
+        "narHash": "sha256-P9Yo/RUkpZ/DG9codcNFxcVetpFSaIUlTFdUzcUN+kw=",
+        "owner": "Mop-u",
+        "repo": "moppkgs",
+        "rev": "932a32eee47ec26372da474ae4397fdd745f26a8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mop-u",
+        "repo": "moppkgs",
+        "type": "github"
+      }
+    },
+    "moppkgs_2": {
+      "inputs": {
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1781033988,
-        "narHash": "sha256-s9/nYeG1F+PHKnO8ClMkZ2+rZDxPwES+su+BLb9nOgg=",
+        "lastModified": 1783873035,
+        "narHash": "sha256-YWXTj+J8kV0nok5jDlpWyJGvcQDKRcXe7GJoAW+tfM4=",
         "owner": "Mop-u",
         "repo": "moppkgs",
-        "rev": "46fba6c1f392cfd16985ca8371152b234b9515c2",
+        "rev": "1913f722562bd8f076edf15340dd30dad592d098",
         "type": "github"
       },
       "original": {
@@ -54,11 +77,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1779971959,
-        "narHash": "sha256-R5nauXyqyfRUFiZycFFZdkF7wl6eaUpPLst35+2nJQY=",
+        "lastModified": 1783703440,
+        "narHash": "sha256-O3/YajjWo001VUIgD8BwaRdSNLUFe7nZ1qV5TwhRBcw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ec942ba042dad5ef097e2ef3a3effc034241f011",
+        "rev": "8f0500b9660505dc3cb647775fe9a978a74b5283",
         "type": "github"
       },
       "original": {
@@ -70,11 +93,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1780749050,
-        "narHash": "sha256-3av0pIjlOWQ6rDbNOmpUSvbNnJkGORQKKjb4LtCZsIY=",
+        "lastModified": 1783776592,
+        "narHash": "sha256-UgCQzxeWI75XM8G+hPrPh+MKzEPjG3SpAj7dtqSbksA=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "a799d3e3886da994fa307f817a6bc705ae538eeb",
+        "rev": "e7a3ca8092b61ff85b6a45bf863ea2b2d6a661b3",
         "type": "github"
       },
       "original": {
@@ -87,7 +110,7 @@
     "root": {
       "inputs": {
         "fusesoc-flake": "fusesoc-flake",
-        "moppkgs": "moppkgs",
+        "moppkgs": "moppkgs_2",
         "nixpkgs": "nixpkgs_3"
       }
     }
