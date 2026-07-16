@@ -51,7 +51,7 @@ endgenerate \
     if `ifdef VERILATOR (type(hs_0.data) != type(hs_1.data)) `else (hs_0.W != hs_1.W) `endif begin : g_hs_assert_h_``hs_0``_``hs_1 \
         $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal handshake %s.data's %0d-bit type %s",`"hs_0`",hs_0.W,hs_0.Typename,`"hs_1`",hs_1.W,hs_1.Typename); \
     end \
-endgenerate
+endgenerate \
 `endif
 
 `define HS_EXPECT_MIN(hs, min) `ifdef SIM_DEBUG \
