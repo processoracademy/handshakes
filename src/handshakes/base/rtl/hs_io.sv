@@ -21,9 +21,7 @@ interface hs_io #(
     input logic sync_rst
 );
     localparam integer unsigned W = $bits(T);
-`ifndef SV2V
     localparam string Typename = $typename(T);
-`endif
 `ifdef VERILATOR
     typedef T data_t;
 `else

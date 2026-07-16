@@ -41,7 +41,6 @@
                 "-Weverything"
                 "-Wno-empty-output-connection"
                 "-DSIM_DEBUG"
-                "-DSV2V"
                 "-I src/handshakes/base/rtl"
               ];
               index = [
