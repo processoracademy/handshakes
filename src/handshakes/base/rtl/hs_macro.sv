@@ -15,11 +15,10 @@
 //  data_w - width value to check against
 `define HS_ASSERT_W(hs, data_w) \
 `ifdef __slang__ $static_assert(type(hs.T) == type(logic [data_w-1:0])); \
-`else generate \
-    if (hs.W != data_w) begin : g_hs_assert_w_``hs \
+`else \
+    generate if (hs.W != data_w) begin : g_hs_assert_w_`__LINE__ \
         $fatal(1,"%s width (%0d) must equal %s (%0d)",`"hs`",hs.W,`"data_w`",data_w); \
-    end \
-endgenerate \
+    end endgenerate \
 `endif
 
 // Macro: HS_ASSERT_T
@@ -31,11 +30,13 @@ endgenerate \
 //  type_t - type to check against
 `define HS_ASSERT_T(hs, type_t) \
 `ifdef __slang__ $static_assert(type(hs.T) == type(type_t)); \
-`else generate \
-    if `ifdef VERILATOR (type(hs.data) != type(type_t)) `else (hs.W != $bits(type_t)) `endif begin : g_hs_assert_t_``hs \
+`else \
+    `ifdef VERILATOR initial assert (type(hs.data) == type(type_t)) else \
+    `else generate if (hs.W != $bits(type_t)) begin : g_hs_assert_t_`__LINE__ \
+    `endif \
         $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal %0d-bit type %s (%s)",`"hs`",hs.W,hs.Typename,$bits(type_t),`"type_t`",$typename(type_t)); \
-    end \
-endgenerate \
+    `ifndef VERILATOR end endgenerate \
+    `endif \
 `endif
 
 // Macro: HS_ASSERT_H
@@ -47,17 +48,17 @@ endgenerate \
 //  hs_1 - second <hs_io> interface to check
 `define HS_ASSERT_H(hs_0, hs_1) \
 `ifdef __slang__ $static_assert(type(hs_0.T) == type(hs_1.T)); \
-`else generate \
-    if `ifdef VERILATOR (type(hs_0.data) != type(hs_1.data)) `else (hs_0.W != hs_1.W) `endif begin : g_hs_assert_h_``hs_0``_``hs_1 \
+`else \
+    `ifdef VERILATOR initial assert (type(hs_0.data) == type(hs_1.data)) else \
+    `else generate if (hs_0.W != hs_1.W) begin : g_hs_assert_h_`__LINE__ \
+    `endif \
         $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal handshake %s.data's %0d-bit type %s",`"hs_0`",hs_0.W,hs_0.Typename,`"hs_1`",hs_1.W,hs_1.Typename); \
-    end \
-endgenerate \
+    `ifndef VERILATOR end endgenerate `endif \
 `endif
 
 `define HS_EXPECT_MIN(hs, min) `ifdef SIM_DEBUG \
 generate \
     integer unsigned __hs_expect_min_``hs; \
-    initial __hs_expect_min_``hs = '0; \
     always_ff @(posedge hs.clk) begin \
         if(hs.sync_rst) begin \
             __hs_expect_min_``hs <= '0; \
@@ -83,7 +84,6 @@ endgenerate \
 `define HS_EXPECT_MAX(hs, max) `ifdef SIM_DEBUG \
 generate \
     integer unsigned __hs_expect_max_``hs; \
-    initial __hs_expect_max_``hs = '0; \
     always_ff @(posedge hs.clk) begin \
         if(hs.sync_rst) begin \
             __hs_expect_max_``hs <= '0; \
