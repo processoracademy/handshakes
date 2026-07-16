@@ -1,10 +1,7 @@
 `ifndef HS_MACRO_
 `define HS_MACRO_
 
-`define HS_CAST(from_hs, to_data) \
-`ifdef SV2V (from_hs.W)'(to_data) \
-`else type (from_hs.data)'(to_data) \
-`endif
+`define HS_CAST(from_hs, to_data) type (from_hs.data)'(to_data)
 
 // Macro: HS_ASSERT_W
 // Assert that the width of a handshake is the same as provided width.
@@ -13,9 +10,12 @@
 // Parameters:
 //  hs     - <hs_io> interface to check the data width of
 //  data_w - width value to check against
-`define HS_ASSERT_W(hs, data_w) `ifndef SV2V \
-initial assert (hs.W == data_w) else $fatal(1,"%s width (%0d) must equal %s (%0d)",`"hs`",hs.W,`"data_w`",data_w); \
-`endif
+`define HS_ASSERT_W(hs, data_w) \
+generate \
+    if (hs.W != data_w) begin : g_hs_assert_w_``hs \
+        $fatal(1,"%s width (%0d) must equal %s (%0d)",`"hs`",hs.W,`"data_w`",data_w); \
+    end \
+endgenerate
 
 // Macro: HS_ASSERT_T
 // Assert that the width of a handshake is the same as the width of provided type.
@@ -24,13 +24,12 @@ initial assert (hs.W == data_w) else $fatal(1,"%s width (%0d) must equal %s (%0d
 // Parameters:
 //  hs     - <hs_io> interface to check
 //  type_t - type to check against
-`define HS_ASSERT_T(hs, type_t) `ifndef SV2V \
-initial assert \
-`ifdef VERILATOR (type(hs.data) == type(type_t)) \
-`else (hs.W == $bits(type_t)) \
-`endif \
-else $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal %0d-bit type %s (%s)",`"hs`",hs.W,hs.Typename,$bits(type_t),`"type_t`",$typename(type_t)); \
-`endif
+`define HS_ASSERT_T(hs, type_t) \
+generate \
+    if `ifdef VERILATOR (type(hs.data) != type(type_t)) `else (hs.W != $bits(type_t)) `endif begin : g_hs_assert_t_``hs \
+        $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal %0d-bit type %s (%s)",`"hs`",hs.W,hs.Typename,$bits(type_t),`"type_t`",$typename(type_t)); \
+    end \
+endgenerate
 
 // Macro: HS_ASSERT_H
 // Assert that the width of one handshake's data is equal to another's.
@@ -39,15 +38,14 @@ else $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal %0d-bit type %s 
 // Parameters:
 //  hs_0 - first <hs_io> interface to check
 //  hs_1 - second <hs_io> interface to check
-`define HS_ASSERT_H(hs_0, hs_1) `ifndef SV2V \
-initial assert \
-`ifdef VERILATOR (type(hs_0.data) == type(hs_1.data)) \
-`else (hs_0.W == hs_1.W) \
-`endif \
-else $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal handshake %s.data's %0d-bit type %s",`"hs_0`",hs_0.W,hs_0.Typename,`"hs_1`",hs_1.W,hs_1.Typename); \
-`endif
+`define HS_ASSERT_H(hs_0, hs_1) \
+generate \
+    if `ifdef VERILATOR (type(hs_0.data) != type(hs_1.data)) `else (hs_0.W != hs_1.W) `endif begin : g_hs_assert_h_``hs_0``_``hs_1 \
+        $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal handshake %s.data's %0d-bit type %s",`"hs_0`",hs_0.W,hs_0.Typename,`"hs_1`",hs_1.W,hs_1.Typename); \
+    end \
+endgenerate
 
-`define HS_EXPECT_MIN(hs, min) `ifndef SV2V `ifdef SIM_DEBUG \
+`define HS_EXPECT_MIN(hs, min) `ifdef SIM_DEBUG \
 generate \
     integer unsigned __hs_expect_min_``hs; \
     initial __hs_expect_min_``hs = '0; \
@@ -71,9 +69,9 @@ generate \
         end \
     end \
 endgenerate \
-`endif `endif
+`endif
 
-`define HS_EXPECT_MAX(hs, max) `ifndef SV2V `ifdef SIM_DEBUG \
+`define HS_EXPECT_MAX(hs, max) `ifdef SIM_DEBUG \
 generate \
     integer unsigned __hs_expect_max_``hs; \
     initial __hs_expect_max_``hs = '0; \
@@ -92,7 +90,7 @@ generate \
         end \
     end \
 endgenerate \
-`endif `endif
+`endif
 
 `define HS_EXPECT_RANGE(hs, min, max) \
 `HS_EXPECT_MIN(hs, min) `HS_EXPECT_MAX(hs, max)
