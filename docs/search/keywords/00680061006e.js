@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("han",["Information"],[["Handshake",,[["hs_io","Handshake State Queries",,,0,"File:handshakes/base/rtl/hs_io.sv:hs_io.Handshake_State_Queries","SystemVerilogClass:hs_io:Handshake_State_Queries"]]]]);

@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("SystemVerilogClass:fctl_s","fctl_s");NDSummary.OnSummaryLoaded("SystemVerilogClass:fctl_s",[["SystemVerilog","SystemVerilog"]],[["Structs","Struct"]],[[19,0,0,"fctl_s"]]);

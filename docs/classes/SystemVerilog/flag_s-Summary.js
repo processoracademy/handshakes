@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("SystemVerilogClass:flag_s","flag_s");NDSummary.OnSummaryLoaded("SystemVerilogClass:flag_s",[["SystemVerilog","SystemVerilog"]],[["Structs","Struct"]],[[20,0,0,"flag_s"]]);

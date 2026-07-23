@@ -1,0 +1,1 @@
+﻿NDSummary.OnToolTipsLoaded("SystemVerilogClass:flag_s",{20:"<div class=\"NDToolTip TStruct LSystemVerilog\"><div class=\"TTSummary\">Flag struct for hs_io interfaces. See hs_io::Handshake State Queries</div></div>"});

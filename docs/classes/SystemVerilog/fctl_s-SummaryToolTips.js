@@ -1,0 +1,1 @@
+﻿NDSummary.OnToolTipsLoaded("SystemVerilogClass:fctl_s",{19:"<div class=\"NDToolTip TStruct LSystemVerilog\"><div class=\"TTSummary\">Contains all the control signals for driving &lt;hs_driver_flw&gt;</div></div>"});
