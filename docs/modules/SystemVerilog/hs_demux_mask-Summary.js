@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("SystemVerilogModule:hs_demux_mask","hs_demux_mask");NDSummary.OnSummaryLoaded("SystemVerilogModule:hs_demux_mask",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[7,0,0,"hs_demux_mask"]]);

@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("std",["Information"],[["std",,[["hs_io","Parameter Type Support in Quartus lite/std",,,0,"File:handshakes/base/rtl/hs_io.sv:hs_io.Parameter_Type_Support_in_Quartus_lite/std","SystemVerilogClass:hs_io:Parameter_Type_Support_in_Quartus_lite/std"]]]]);

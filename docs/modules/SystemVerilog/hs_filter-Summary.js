@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("SystemVerilogModule:hs_filter","hs_filter");NDSummary.OnSummaryLoaded("SystemVerilogModule:hs_filter",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[27,0,0,"hs_filter"]]);

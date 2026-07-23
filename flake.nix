@@ -8,7 +8,7 @@
   };
 
   outputs =
-    inputs@{ nixpkgs, ... }:
+    inputs@{ self, nixpkgs, ... }:
     let
       inherit (nixpkgs) lib;
       forEachSystem = systems: f: builtins.foldl' (lib.recursiveUpdate) { } (map f systems);
@@ -28,7 +28,7 @@
             inherit system;
             config.allowUnfree = true;
           };
-          inherit (inputs.moppkgs.packages.${system}) slang-server;
+          inherit (inputs.moppkgs.packages.${system}) slang-server naturaldocs;
           inherit (inputs.fusesoc-flake.packages.${system}) fusesoc;
 
           externalCores = fusesoc.lib.mkCoreSet [ fusesoc.lib.cores.""."".fifo."1.3-r1" ];
@@ -57,24 +57,42 @@
               ];
             }
           );
-
         in
         {
           legacyPackages.${system}.fusesocCores = coreSet;
-          packages.${system}.default = fusesoc.lib.dumpCores coreSet;
+          packages.${system} = {
+            default = fusesoc.lib.dumpCores coreSet;
+            docs = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
+              pname = "handshakes-docs";
+              inherit (coreSet.processoracademy.handshakes.handshakes) version;
+              src = ./.;
+              nativeBuildInputs = [ naturaldocs ];
+              buildPhase = ''
+                mkdir -p docs
+                NaturalDocs nd_config --simple-console-output
+              '';
+              installPhase = ''
+                mv ./docs $out
+              '';
+            });
+          };
           devShells.${system}.default = pkgs.mkShell {
             packages = [
               (fusesoc.lib.wrapFusesoc coreSet)
               slang-server
               pkgs.verible
+              naturaldocs
             ];
             shellHook = ''
               export OBJCACHE=ccache
               mkdir -p .slang
               ln -vfs ${slangConf} .slang/server.json
+              mkdir -p docs
+              NaturalDocs nd_config
             '';
           };
           checks.${system} = {
+            inherit (self.packages.${system}) default docs;
             inherit ((coreSet.""."".fifo.withTools [ pkgs.iverilog ]).run)
               fifo_fwft_tb
               dual_clock_fifo_tb

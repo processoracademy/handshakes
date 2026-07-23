@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("sta",["Information","Enumeration"],[["State",,[["hs_io","Handshake State Queries",,,0,"File:handshakes/base/rtl/hs_io.sv:hs_io.Handshake_State_Queries","SystemVerilogClass:hs_io:Handshake_State_Queries"]]],["state_e",,[["hs",,,,1,"File:handshakes/base/rtl/hs.sv:hs.state_e","SystemVerilogPackage:hs:state_e"]]]]);

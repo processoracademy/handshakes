@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("File:handshakes/handshakes/rtl/hs_arbiter.sv","hs_arbiter.sv");NDSummary.OnSummaryLoaded("File:handshakes/handshakes/rtl/hs_arbiter.sv",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[26,0,0,"hs_arbiter","hs_arbiter"]]);
