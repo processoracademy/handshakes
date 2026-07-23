@@ -60,7 +60,22 @@
         in
         {
           legacyPackages.${system}.fusesocCores = coreSet;
-          packages.${system}.default = fusesoc.lib.dumpCores coreSet;
+          packages.${system} = {
+            default = fusesoc.lib.dumpCores coreSet;
+            docs = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
+              pname = "handshakes-docs";
+              inherit (coreSet.processoracademy.handshakes.handshakes) version;
+              src = ./.;
+              nativeBuildInputs = [ naturaldocs ];
+              buildPhase = ''
+                mkdir -p docs
+                NaturalDocs nd_config --simple-console-output
+              '';
+              installPhase = ''
+                mv ./docs $out
+              '';
+            });
+          };
           devShells.${system}.default = pkgs.mkShell {
             packages = [
               (fusesoc.lib.wrapFusesoc coreSet)
@@ -77,6 +92,7 @@
             '';
           };
           checks.${system} = {
+            inherit (self.packages.${system}) default docs;
             inherit ((coreSet.""."".fifo.withTools [ pkgs.iverilog ]).run)
               fifo_fwft_tb
               dual_clock_fifo_tb
