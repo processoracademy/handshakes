@@ -1,4 +1,19 @@
 `include "hs_macro.sv"
+/*
+Module: hs_bram
+
+Reads are automatically stalled if a RAW hazard is detected.
+
+Quartus Prime Pro can infer to BRAM and MLAB ram blocks from this module.
+
+Ports:
+    read_ptr_hs    - Read address
+    read_data_hs   - Read data
+    write_fprobe_i - Write handshake fprobe
+    write_fdrv_o   - Write handshake fdrv
+    write_data_i   - Write data
+    write_ptr_i    - Write address
+*/
 module hs_bram #(
     parameter integer unsigned Size = 1
 ) (
@@ -26,10 +41,10 @@ module hs_bram #(
         .state(write_fprobe_i.state)
     );
 
-    (* syn_ramstyle = "no_rw_check" *) data_t memory[Size];
-    logic we;
+    (* syn_ramstyle = "no_rw_check" *)data_t memory   [Size];
+    logic  we;
     data_t read_buf;
-    ptr_t read_ptr;
+    ptr_t  read_ptr;
     assign we = clk_en && write_flag.good;
     always_ff @(posedge clk) begin
         if (we) begin

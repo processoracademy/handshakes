@@ -1,4 +1,25 @@
 `include "hs_macro.sv"
+/*
+Module: hs_filter
+
+Use pass_i to forward or drop data passing from flw_hs to ldr_hs.
+
+Frames are preserved unless an entire frame is dropped from start to finish.
+
+Ports:
+    flw_hs - source data
+    ldr_hs - filtered data
+    pass_i - synchronous with <flw_hs> data, discards <flw_hs> transactions when set to 0.
+
+--- SystemVerilog
+// Example filter that keeps values that are greater than zero:
+hs_filter is_greater_than_0 (
+    .flw_hs(flw_hs),
+    .ldr_hs(ldr_hs),
+    .pass_i((flw_hs.data > 0))
+);
+---
+*/
 module hs_filter (
           hs_io.flw flw_hs,
           hs_io.ldr ldr_hs,

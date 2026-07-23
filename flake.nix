@@ -8,7 +8,7 @@
   };
 
   outputs =
-    inputs@{ nixpkgs, ... }:
+    inputs@{ self, nixpkgs, ... }:
     let
       inherit (nixpkgs) lib;
       forEachSystem = systems: f: builtins.foldl' (lib.recursiveUpdate) { } (map f systems);
@@ -28,7 +28,7 @@
             inherit system;
             config.allowUnfree = true;
           };
-          inherit (inputs.moppkgs.packages.${system}) slang-server;
+          inherit (inputs.moppkgs.packages.${system}) slang-server naturaldocs;
           inherit (inputs.fusesoc-flake.packages.${system}) fusesoc;
 
           externalCores = fusesoc.lib.mkCoreSet [ fusesoc.lib.cores.""."".fifo."1.3-r1" ];
@@ -57,7 +57,6 @@
               ];
             }
           );
-
         in
         {
           legacyPackages.${system}.fusesocCores = coreSet;
@@ -67,11 +66,14 @@
               (fusesoc.lib.wrapFusesoc coreSet)
               slang-server
               pkgs.verible
+              naturaldocs
             ];
             shellHook = ''
               export OBJCACHE=ccache
               mkdir -p .slang
               ln -vfs ${slangConf} .slang/server.json
+              mkdir -p docs
+              NaturalDocs nd_config
             '';
           };
           checks.${system} = {
