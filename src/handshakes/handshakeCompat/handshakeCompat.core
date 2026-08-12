@@ -1,7 +1,6 @@
 CAPI=2:
-name: "processoracademy:handshakes:handshakeCompat:0.6.1"
+name: "processoracademy:handshakes:handshakeCompat:0.6.2"
 description: "Legacy EOT handshake compatibility modules"
-
 filesets:
   rtl:
     depend:
@@ -11,7 +10,6 @@ filesets:
       - rtl/legacy_eot_to_hs_ldr.sv
       - rtl/req_ack_to_hs_flw.sv
     file_type: systemVerilogSource
-
 targets:
   default:
     filesets:

@@ -1,13 +1,11 @@
 CAPI=2:
-name: "processoracademy:handshakes:basePkgs:0.6.1"
+name: "processoracademy:handshakes:basePkgs:0.6.2"
 description: ""
-
 filesets:
   rtl:
     files:
       - rtl/hs.sv
     file_type: systemVerilogSource
-
 targets:
   default:
     filesets:
