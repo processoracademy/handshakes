@@ -1,3 +1,4 @@
+`include "hs_macro.sv"
 module hs_buffer (
     hs_io.flw flw_hs,
     hs_io.ldr ldr_hs
