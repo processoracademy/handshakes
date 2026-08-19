@@ -46,10 +46,7 @@ module hs_serialize #(
     );
 
     hs_io #(.T(wide_s)) register_hs (.*);
-    // We have to use hs_buffer until abort support is removed completely,
-    // as hs_register has a 2-transaciton abort absorption which creates
-    // timing and lockup issues with this logic.
-    hs_buffer hs_buffer (
+    hs_register hs_register (
         .flw_hs(filtered_hs),
         .ldr_hs(register_hs)
     );

@@ -34,7 +34,7 @@
     `ifdef VERILATOR initial assert (type(hs.data) == type(type_t)) else \
     `else generate if (hs.W != $bits(type_t)) begin : g_hs_assert_t_`__LINE__ \
     `endif \
-        $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal %0d-bit type %s (%s)",`"hs`",hs.W,hs.Typename,$bits(type_t),`"type_t`",$typename(type_t)); \
+        $fatal(1,"Handshake %s.data's %0d-bit type (%s) must equal %0d-bit type %s (%s)",`"hs`",hs.W,hs.Typename,$bits(type_t),`"type_t`",$typename(type_t)); \
     `ifndef VERILATOR end endgenerate \
     `endif \
 `endif
@@ -52,8 +52,16 @@
     `ifdef VERILATOR initial assert (type(hs_0.data) == type(hs_1.data)) else \
     `else generate if (hs_0.W != hs_1.W) begin : g_hs_assert_h_`__LINE__ \
     `endif \
-        $fatal(1,"handshake %s.data's %0d-bit type (%s) must equal handshake %s.data's %0d-bit type %s",`"hs_0`",hs_0.W,hs_0.Typename,`"hs_1`",hs_1.W,hs_1.Typename); \
+        $fatal(1,"Handshake %s.data's %0d-bit type (%s) must equal handshake %s.data's %0d-bit type %s",`"hs_0`",hs_0.W,hs_0.Typename,`"hs_1`",hs_1.W,hs_1.Typename); \
     `ifndef VERILATOR end endgenerate `endif \
+`endif
+
+`define HS_FORBID_ABORTS(hs) `ifdef SIM_DEBUG \
+always_ff @(posedge hs.clk) begin \
+    if(hs.clk_en && hs.flag.term) begin \
+        $fatal(1,"Unsupported abort occured in %s. Eliminate aborts from your design or use hs_absorb_aborts to convert the legacy behaviour.", `"hs`"); \
+    end \
+end \
 `endif
 
 `define HS_EXPECT_MIN(hs, min) `ifdef SIM_DEBUG \

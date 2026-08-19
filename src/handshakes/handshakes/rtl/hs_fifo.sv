@@ -7,6 +7,7 @@ module hs_fifo #(
     hs_io.ldr ldr_hs
 );
     `HS_ASSERT_H(flw_hs, ldr_hs)
+    `HS_FORBID_ABORTS(flw_hs)
 
     wire clk = flw_hs.clk;
     wire clk_en = flw_hs.clk_en;
@@ -58,18 +59,11 @@ module hs_fifo #(
             assign internal_fctl.block = 1'b0;
         end
 
-
         hs_io #(.T(data_t)) flw_indirect_hs (.*);
         hs_replace_data hs_replace_data (
             .flw_hs(flw_hs),
-            .ldr_hs(flw_indirect_hs),
+            .ldr_hs(internal_hs),
             .data_i(data_t'(flw_hs.data))
-        );
-        // TODO: once aborts are removed, drop hs_register
-        //       as it just exists here to consume aborts.
-        hs_register hs_register (
-            .flw_hs(flw_indirect_hs),
-            .ldr_hs(internal_hs)
         );
 
         assign advance_flw = internal_hs.flag.good;
