@@ -1,1 +1,1 @@
-﻿NDFramePage.OnPageTitleLoaded("SystemVerilogModule:hs_broadcast","hs_broadcast");NDSummary.OnSummaryLoaded("SystemVerilogModule:hs_broadcast",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[21,0,0,"hs_broadcast"]]);
+﻿NDFramePage.OnPageTitleLoaded("SystemVerilogModule:hs_broadcast","hs_broadcast");NDSummary.OnSummaryLoaded("SystemVerilogModule:hs_broadcast",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[27,0,0,"hs_broadcast"]]);

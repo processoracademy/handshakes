@@ -1,1 +1,1 @@
-﻿NDFramePage.OnPageTitleLoaded("SystemVerilogClass:lctl_s","lctl_s");NDSummary.OnSummaryLoaded("SystemVerilogClass:lctl_s",[["SystemVerilog","SystemVerilog"]],[["Structs","Struct"]],[[18,0,0,"lctl_s"]]);
+﻿NDFramePage.OnPageTitleLoaded("SystemVerilogClass:lctl_s","lctl_s");NDSummary.OnSummaryLoaded("SystemVerilogClass:lctl_s",[["SystemVerilog","SystemVerilog"]],[["Structs","Struct"]],[[23,0,0,"lctl_s"]]);
