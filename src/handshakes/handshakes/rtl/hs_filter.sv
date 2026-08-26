@@ -20,7 +20,9 @@ hs_filter is_greater_than_0 (
 );
 ---
 */
-module hs_filter (
+module hs_filter #(
+    parameter logic __UseLegacyFilter = 1'b0
+) (
           hs_io.flw flw_hs,
           hs_io.ldr ldr_hs,
     input logic     pass_i
@@ -30,55 +32,69 @@ module hs_filter (
     wire sync_rst = flw_hs.sync_rst;
 
     `HS_ASSERT_H(flw_hs, ldr_hs)
-
-    logic valid;
-    always_ff @(posedge clk) begin
-        if (sync_rst) begin
-            valid <= 1'b0;
+    generate
+        if (__UseLegacyFilter) begin : g_legacy_filter
+            initial $warning("Using deprecated legacy version of hs_filter! This module generates aborts!");
+            always_comb begin
+                unique case (ldr_hs.state)
+                    hs::BLOCK: flw_hs.fdrv.ack = (flw_hs.state == hs::BLOCK) && ldr_hs.fdrv.ack;
+                    default:   flw_hs.fdrv.ack = (flw_hs.state != hs::BLOCK) && (ldr_hs.fdrv.ack || !pass_i);
+                endcase
+            end
+            assign ldr_hs.ldrv.req  = flw_hs.ldrv.req && pass_i;
+            assign ldr_hs.ldrv.last = flw_hs.ldrv.last && (ldr_hs.ldrv.req || (ldr_hs.state != hs::READY));
+            assign ldr_hs.data      = flw_hs.data;
         end
-        else if (clk_en) begin
-            if (flw_hs.flag.good && pass_i) begin
-                ldr_hs.data <= flw_hs.data;
-                valid       <= 1'b1;
+        else begin : g_new_filter
+            logic valid;
+            always_ff @(posedge clk) begin
+                if (sync_rst) begin
+                    valid <= 1'b0;
+                end
+                else if (clk_en) begin
+                    if (flw_hs.flag.good && pass_i) begin
+                        ldr_hs.data <= flw_hs.data;
+                        valid       <= 1'b1;
+                    end
+                    else if (ldr_hs.flag.good) begin
+                        valid <= 1'b0;
+                    end
+                end
             end
-            else if (ldr_hs.flag.good) begin
-                valid <= 1'b0;
+
+            logic last;
+            always_ff @(posedge clk) begin
+                if (sync_rst) begin
+                    last <= 1'b0;
+                end
+                if (clk_en) begin
+                    if (flw_hs.flag.exit && ((pass_i && !flw_hs.flag.term) || (ldr_hs.state != hs::READY) || valid)) begin
+                        last <= 1'b1;
+                    end
+                    else if (ldr_hs.flag.exit) begin
+                        last <= 1'b0;
+                    end
+                end
             end
+
+            always_comb begin
+                unique case (flw_hs.state)
+                    hs::READY, hs::PROBE, hs::MULTI: begin
+                        flw_hs.fdrv.ack = ldr_hs.fdrv.ack || (!pass_i) || (!valid);  // make sure to ack on an empty buffer
+                    end
+                    hs::BLOCK: begin
+                        flw_hs.fdrv.ack = valid || (ldr_hs.state != hs::READY);
+                    end
+                endcase
+            end
+
+            hs::lctl_s lctl;
+            assign ldr_hs.ldrv = hs::drive_ldr(ldr_hs.state, lctl);
+            wire ldr_valid = valid && ((pass_i && flw_hs.ldrv.req) || last);
+            assign lctl.start = ldr_valid;
+            assign lctl.pause = !ldr_valid;
+            assign lctl.close = last && valid;
+            assign lctl.abort = 1'b0;
         end
-    end
-
-    logic last;
-    always_ff @(posedge clk) begin
-        if (sync_rst) begin
-            last <= 1'b0;
-        end
-        if (clk_en) begin
-            if (flw_hs.flag.exit && ((pass_i && !flw_hs.flag.term) || (ldr_hs.state != hs::READY) || valid)) begin
-                last <= 1'b1;
-            end
-            else if (ldr_hs.flag.exit) begin
-                last <= 1'b0;
-            end
-        end
-    end
-
-    always_comb begin
-        unique case (flw_hs.state)
-            hs::READY, hs::PROBE, hs::MULTI: begin
-                flw_hs.fdrv.ack = ldr_hs.fdrv.ack || (!pass_i) || (!valid);  // make sure to ack on an empty buffer
-            end
-            hs::BLOCK: begin
-                flw_hs.fdrv.ack = valid || (ldr_hs.state != hs::READY);
-            end
-        endcase
-    end
-
-    hs::lctl_s lctl;
-    assign ldr_hs.ldrv = hs::drive_ldr(ldr_hs.state, lctl);
-    wire ldr_valid = valid && ((pass_i && flw_hs.ldrv.req) || last);
-    assign lctl.start = ldr_valid;
-    assign lctl.pause = !ldr_valid;
-    assign lctl.close = last && valid;
-    assign lctl.abort = 1'b0;
-
+    endgenerate
 endmodule : hs_filter
