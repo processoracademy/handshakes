@@ -90,7 +90,8 @@
               mkdir -p .slang
               ln -vfs ${slangConf} .slang/server.json
               mkdir -p docs
-              NaturalDocs nd_config
+              rm -rf ./nd_config/Working\ Data
+              # NaturalDocs nd_config
             '';
           };
           checks.${system} = {
