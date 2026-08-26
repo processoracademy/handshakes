@@ -8,6 +8,7 @@ module hs_register (
     wire sync_rst = flw_hs.sync_rst;
 
     `HS_ASSERT_H(flw_hs, ldr_hs)
+    `HS_FORBID_ABORTS(flw_hs)
 
     logic valid;
     always_ff @(posedge clk) begin
@@ -53,13 +54,8 @@ module hs_register (
 
     hs::lctl_s lctl;
     assign ldr_hs.ldrv = hs::drive_ldr(ldr_hs.state, lctl);
-    // Once aborts are compeletely removed from the project,
-    // we can assign ldr_valid = valid;
-    // This will save 1 transaction's worth of latency.
-    // TODO: cleanup hs_serialize once we drop abort absorption
-    wire ldr_valid = valid && (flw_hs.ldrv.req || last);
-    assign lctl.start = ldr_valid;
-    assign lctl.pause = !ldr_valid;
+    assign lctl.start = valid;
+    assign lctl.pause = !valid;
     assign lctl.close = last && valid;
     assign lctl.abort = 1'b0;
 
