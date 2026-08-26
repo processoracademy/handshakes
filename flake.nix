@@ -30,10 +30,11 @@
           };
           inherit (inputs.moppkgs.packages.${system}) slang-server naturaldocs;
           inherit (inputs.fusesoc-flake.packages.${system}) fusesoc;
+          inherit (inputs.fusesoc-flake.legacyPackages.${system}) fusesocCores fusesocTools;
 
-          externalCores = fusesoc.lib.mkCoreSet [ fusesoc.lib.cores.""."".fifo."1.3-r1" ];
+          externalCores = fusesocTools.mkCoreSet [ fusesocCores.""."".fifo."1.3-r1" ];
 
-          coreSet = fusesoc.lib.extendCoreSet externalCores (fusesoc.lib.importCores ./src);
+          coreSet = fusesocTools.extendCoreSet externalCores (fusesocTools.importCores ./src);
 
           slangConf = pkgs.writeText "server.json" (
             builtins.toJSON {
@@ -48,7 +49,7 @@
                   dirs = [
                     "src"
                   ]
-                  ++ (map (x: "${x}") (fusesoc.lib.toCoreList externalCores));
+                  ++ (map (x: "${x}") (fusesocTools.toCoreList externalCores));
                   excludeDirs = [
                     "build"
                     ".direnv"
@@ -61,7 +62,7 @@
         {
           legacyPackages.${system}.fusesocCores = coreSet;
           packages.${system} = {
-            default = fusesoc.lib.dumpCores coreSet;
+            default = fusesocTools.dumpCores self.legacyPackages.${system}.fusesocCores;
             docs = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
               pname = "handshakes-docs";
               inherit (coreSet.processoracademy.handshakes.handshakes) version;
@@ -78,13 +79,14 @@
           };
           devShells.${system}.default = pkgs.mkShell {
             packages = [
-              (fusesoc.lib.wrapFusesoc coreSet)
-              slang-server
-              pkgs.verible
+              fusesoc
               naturaldocs
+              pkgs.verible
+              slang-server
             ];
             shellHook = ''
               export OBJCACHE=ccache
+              export FUSESOC_CONFIG=${fusesocTools.mkConf self.legacyPackages.${system}.fusesocCores}
               mkdir -p .slang
               ln -vfs ${slangConf} .slang/server.json
               mkdir -p docs
@@ -93,7 +95,7 @@
           };
           checks.${system} = {
             inherit (self.packages.${system}) default docs;
-            inherit ((coreSet.""."".fifo.withTools [ pkgs.iverilog ]).run)
+            inherit ((self.legacyPackages.${system}.fusesocCores.""."".fifo.withTools [ pkgs.iverilog ]).run)
               fifo_fwft_tb
               dual_clock_fifo_tb
               ;
