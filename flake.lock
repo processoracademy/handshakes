@@ -6,18 +6,18 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1784042624,
-        "narHash": "sha256-auCI9PiG5v1s2kEnqcIKNrGx4CejjLUBuGiwq+zeSK0=",
-        "owner": "Mop-u",
-        "repo": "fusesoc-flake",
-        "rev": "e462752f28294f00ae65f76a2c9227a397c8094b",
-        "type": "github"
+        "lastModified": 1785172579,
+        "narHash": "sha256-t/BGxIUhUsCArdxKT/QPuVfA8YmP9J04gV3tJgLYdiQ=",
+        "ref": "refs/tags/v0.3.2",
+        "rev": "1a9a7329c08173ac21dba38261eca97c9b0fb8b1",
+        "revCount": 42,
+        "type": "git",
+        "url": "https://tangled.org/moppu.dev/fusesoc-flake"
       },
       "original": {
-        "owner": "Mop-u",
-        "ref": "v0.3.0",
-        "repo": "fusesoc-flake",
-        "type": "github"
+        "ref": "refs/tags/v0.3.2",
+        "type": "git",
+        "url": "https://tangled.org/moppu.dev/fusesoc-flake"
       }
     },
     "moppkgs": {

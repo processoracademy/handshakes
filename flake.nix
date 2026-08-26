@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     moppkgs.url = "github:Mop-u/moppkgs";
-    fusesoc-flake.url = "github:Mop-u/fusesoc-flake/v0.3.0";
+    fusesoc-flake.url = "git+https://tangled.org/moppu.dev/fusesoc-flake?ref=refs/tags/v0.3.2";
   };
 
   outputs =
