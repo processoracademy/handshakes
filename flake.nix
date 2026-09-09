@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     moppkgs.url = "github:Mop-u/moppkgs";
-    fusesoc-flake.url = "git+https://tangled.org/moppu.dev/fusesoc-flake?ref=refs/tags/v0.3.2";
+    fusesoc-flake.url = "git+https://tangled.org/moppu.dev/fusesoc-flake";
   };
 
   outputs =
@@ -29,7 +29,6 @@
             config.allowUnfree = true;
           };
           inherit (inputs.moppkgs.packages.${system}) slang-server naturaldocs;
-          inherit (inputs.fusesoc-flake.packages.${system}) fusesoc;
           inherit (inputs.fusesoc-flake.legacyPackages.${system}) fusesocCores fusesocTools;
 
           externalCores = fusesocTools.mkCoreSet [ fusesocCores.""."".fifo."1.3-r1" ];
@@ -42,7 +41,7 @@
                 "-Weverything"
                 "-Wno-empty-output-connection"
                 "-DSIM_DEBUG"
-                "-I src/handshakes/base/rtl"
+                "-I src/rtl"
               ];
               index = [
                 {
@@ -79,8 +78,8 @@
           };
           devShells.${system}.default = pkgs.mkShell {
             packages = [
-              fusesoc
               naturaldocs
+              pkgs.fusesoc
               pkgs.verible
               slang-server
             ];
@@ -89,9 +88,7 @@
               export FUSESOC_CONFIG=${fusesocTools.mkConf self.legacyPackages.${system}.fusesocCores}
               mkdir -p .slang
               ln -vfs ${slangConf} .slang/server.json
-              mkdir -p docs
               rm -rf ./nd_config/Working\ Data
-              # NaturalDocs nd_config
             '';
           };
           checks.${system} = {
