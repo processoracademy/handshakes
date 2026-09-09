@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("fct",["Struct"],[["fctl_s",,[[,,,,0,"File:handshakes/base/rtl/hs.sv:fctl_s","SystemVerilogClass:fctl_s"]]]]);
