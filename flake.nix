@@ -33,7 +33,12 @@
 
           externalCores = fusesocTools.mkCoreSet [ fusesocCores.""."".fifo."1.3-r1" ];
 
-          coreSet = fusesocTools.extendCoreSet externalCores (fusesocTools.importCores ./src);
+          coreSet = fusesocTools.extendCoreSet externalCores [
+            (fusesocTools.importCore {
+              coreRoot = ./src;
+              coreName = "handshakes.core";
+            })
+          ];
 
           slangConf = pkgs.writeText "server.json" (
             builtins.toJSON {
@@ -78,7 +83,6 @@
           };
           devShells.${system}.default = pkgs.mkShell {
             packages = [
-              naturaldocs
               pkgs.fusesoc
               pkgs.verible
               slang-server
@@ -88,7 +92,6 @@
               export FUSESOC_CONFIG=${fusesocTools.mkConf self.legacyPackages.${system}.fusesocCores}
               mkdir -p .slang
               ln -vfs ${slangConf} .slang/server.json
-              rm -rf ./nd_config/Working\ Data
             '';
           };
           checks.${system} = {
