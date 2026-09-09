@@ -59,7 +59,7 @@
 `define HS_FORBID_ABORTS(hs) `ifdef SIM_DEBUG \
 always_ff @(posedge hs.clk) begin \
     if(hs.clk_en && hs.flag.term) begin \
-        $fatal(1,"Unsupported abort occured in %s. Eliminate aborts from your design or use hs_absorb_aborts to convert the legacy behaviour.", `"hs`"); \
+        $fatal(1,"Unsupported abort occured in %s. Eliminate aborts from your design!", `"hs`"); \
     end \
 end \
 `endif
