@@ -50,8 +50,7 @@ module hs_squish #(
 
     hs_io #(.T(data_t)) internal_2_hs (.*);
     hs_fifo #(
-        .Depth       (MaxSize),
-        .BufferAborts(1'b0)
+        .Depth(MaxSize)
     ) hs_fifo_data (
         .flw_hs(internal_1_hs),
         .ldr_hs(internal_2_hs)
