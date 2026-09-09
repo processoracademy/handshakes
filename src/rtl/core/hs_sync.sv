@@ -14,6 +14,9 @@ module hs_sync #(
     typedef logic [Handshakes-1:0] mask_t;
     genvar g;
     generate
+        if (SyncPolicy == hs::UndefinedSync) begin : g_must_define_sync_policy
+            $fatal(1, "Synchronization policy must be explicitly defined!");
+        end
         mask_t reqs_i, lasts_i;
         mask_t block_mask;
         mask_t ignore_req;
@@ -37,7 +40,7 @@ module hs_sync #(
 
             hs::fctl_s fctl_g;
             case (SyncPolicy)
-                hs::NoFrameSync: begin
+                hs::NoFrameSync: begin : g_no_frame_sync
                     assign ignore_req[g] = 1'b0;
                     always_comb begin
                         fctl_g.ready = advance_flw;
@@ -45,7 +48,7 @@ module hs_sync #(
                         fctl_g.block = 1'b0;
                     end
                 end
-                hs::Truncate: begin
+                hs::Truncate: begin : g_truncate
                     assign ignore_req[g] = lprobe_i.state == hs::BLOCK || some_blockers;
                     always_comb begin
                         mask_t local_block_mask;
@@ -59,7 +62,7 @@ module hs_sync #(
                         fctl_g.block          = (lprobe_i.state == hs::BLOCK) || !all_partners_blocking;
                     end
                 end
-                hs::FrameSync: begin
+                hs::FrameSync: begin : g_frame_sync
                     assign ignore_req[g] = (lprobe_i.state == hs::BLOCK) || (fprobe_g.state == hs::BLOCK);
                     always_comb begin
                         fctl_g.ready = advance_flw;
@@ -67,8 +70,7 @@ module hs_sync #(
                         fctl_g.block = lprobe_i.state != hs::READY;
                     end
                 end
-                default:
-                begin
+                hs::UndefinedSync: begin : g_undefined_sync
                     assign ignore_req[g] = 1'b0;
                     assign fctl_g        = '0;
                 end
@@ -78,7 +80,7 @@ module hs_sync #(
         always_comb begin : comb_ldrv
             ldrv_o.req = (|(reqs_i & (~ignore_req))) && (&(reqs_i | ignore_req));
             unique case (SyncPolicy)
-                hs::NoFrameSync: begin
+                hs::NoFrameSync, hs::UndefinedSync: begin
                     ldrv_o.last = 1'b0;
                 end
                 hs::Truncate: begin
