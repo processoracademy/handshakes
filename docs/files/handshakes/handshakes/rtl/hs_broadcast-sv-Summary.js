@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("File:handshakes/handshakes/rtl/hs_broadcast.sv","hs_broadcast.sv");NDSummary.OnSummaryLoaded("File:handshakes/handshakes/rtl/hs_broadcast.sv",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[27,0,0,"hs_broadcast","hs_broadcast"]]);

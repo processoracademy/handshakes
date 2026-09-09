@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("SystemVerilogModule:hs_arbiter","hs_arbiter");NDSummary.OnSummaryLoaded("SystemVerilogModule:hs_arbiter",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[26,0,0,"hs_arbiter"]]);

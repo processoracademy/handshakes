@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("SystemVerilogModule:hs_bram","hs_bram");NDSummary.OnSummaryLoaded("SystemVerilogModule:hs_bram",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[8,0,0,"hs_bram"]]);

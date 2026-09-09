@@ -1,1 +1,0 @@
-﻿NDContentPage.OnToolTipsLoaded({15:"<div class=\"NDToolTip TEnumeration LSystemVerilog\"><div class=\"TTSummary\">Handshake main state.&nbsp; The lsb and msb align with ldr and flw peak activity respectively.</div></div>"});

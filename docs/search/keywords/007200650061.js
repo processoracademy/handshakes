@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("rea",["Constant"],[["READY",,[[,,,,0,"File:handshakes/base/rtl/hs.sv:READY","SystemVerilogPackage:hs:READY"]]]]);

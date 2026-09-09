@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("mul",["Constant"],[["MULTI",,[[,,,,0,"File:handshakes/base/rtl/hs.sv:MULTI","SystemVerilogPackage:hs:MULTI"]]]]);

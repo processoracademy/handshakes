@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("blo",["Constant"],[["BLOCK",,[[,,,,0,"File:handshakes/base/rtl/hs.sv:BLOCK","SystemVerilogPackage:hs:BLOCK"]]]]);

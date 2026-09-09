@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("fla",["Struct"],[["flag_s",,[[,,,,0,"File:handshakes/base/rtl/hs.sv:flag_s","SystemVerilogClass:flag_s"]]]]);

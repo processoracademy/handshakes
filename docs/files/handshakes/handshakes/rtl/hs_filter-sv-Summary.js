@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("File:handshakes/handshakes/rtl/hs_filter.sv","hs_filter.sv");NDSummary.OnSummaryLoaded("File:handshakes/handshakes/rtl/hs_filter.sv",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[28,0,0,"hs_filter","hs_filter"]]);
