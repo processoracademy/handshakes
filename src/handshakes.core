@@ -1,0 +1,71 @@
+CAPI=2:
+name: "processoracademy:handshakes:handshakes:0.6.3"
+description: ""
+filesets:
+  rtl:
+    depend:
+      - '>=::fifo:1.3'
+    files:
+      - rtl/hs.sv
+      - rtl/hs_macro.sv: {is_include_file: true}
+      - rtl/hs_io.sv
+      - rtl/lib/_hs_monostable.sv
+      - rtl/lib/_hs_priority_encode.sv
+      - rtl/lib/_hs_round_robin.sv
+      - rtl/lib/_hs_sr_vector.sv
+      # Core modules
+      - rtl/core/hs_alternate.sv
+      - rtl/core/hs_alternate_generic.sv
+      - rtl/core/hs_append.sv
+      - rtl/core/hs_append_generic.sv
+      - rtl/core/hs_arbiter.sv
+      - rtl/core/hs_arbitrate_followers.sv
+      - rtl/core/hs_arbitrate_leaders.sv
+      - rtl/core/hs_atomize.sv
+      - rtl/core/hs_bram.sv
+      - rtl/core/hs_broadcast.sv
+      - rtl/core/hs_capture_on_rising_edge.sv
+      - rtl/core/hs_cdc_fifo.sv
+      - rtl/core/hs_demux_index.sv
+      - rtl/core/hs_demux_mask.sv
+      - rtl/core/hs_deserialize.sv
+      - rtl/core/hs_fifo.sv
+      - rtl/core/hs_filter.sv
+      - rtl/core/hs_frame_switch.sv
+      - rtl/core/hs_init_snapshot.sv
+      - rtl/core/hs_iterate.sv
+      - rtl/core/hs_memory.sv
+      - rtl/core/hs_ordered_resource_share.sv
+      - rtl/core/hs_override_fctl.sv
+      - rtl/core/hs_read_mem.sv
+      - rtl/core/hs_reflect.sv
+      - rtl/core/hs_reframe.sv
+      - rtl/core/hs_register.sv
+      - rtl/core/hs_replace_data.sv
+      - rtl/core/hs_sample.sv
+      - rtl/core/hs_serialize.sv
+      - rtl/core/hs_squish.sv
+      - rtl/core/hs_sync.sv
+      - rtl/core/hs_unblock.sv
+      - rtl/core/hs_unframe.sv
+      # Legacy compatibility modules
+      - rtl/compat/legacy_eot_to_hs_flw.sv
+      - rtl/compat/legacy_eot_to_hs_ldr.sv
+      - rtl/compat/req_ack_to_hs_flw.sv
+      # Deprecated modules
+      - rtl/deprecated/hs_absorb_aborts.sv
+      - rtl/deprecated/hs_buffer.sv
+      - rtl/deprecated/hs_convert_widths.sv
+      - rtl/deprecated/hs_copy.sv
+      - rtl/deprecated/hs_eat.sv
+      - rtl/deprecated/hs_flow_control.sv
+      - rtl/deprecated/hs_lockstep.sv
+      - rtl/deprecated/hs_lockstep_generic.sv
+      - rtl/deprecated/hs_lockstep_packed.sv
+      - rtl/deprecated/hs_merge_values.sv
+      - rtl/deprecated/hs_sync_n_to_1.sv
+    file_type: systemVerilogSource
+targets:
+  default:
+    filesets:
+      - rtl
