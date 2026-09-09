@@ -13,6 +13,8 @@ module hs_deserialize #(
     wire clk_en = narrow_hs.clk_en;
     wire sync_rst = narrow_hs.sync_rst;
 
+    `HS_FORBID_ABORTS(narrow_hs)
+
     initial begin
         assert ((WideW / narrow_hs.W) * narrow_hs.W == WideW)
         else $fatal(1, "Parameter WideW %0d must be a multiple of narrow_hs width %0d", WideW, narrow_hs.W);
@@ -90,11 +92,8 @@ module hs_deserialize #(
 
     hs::lctl_s lctl;
     assign ldrv_o = hs::drive_ldr(lprobe_i.state, lctl);
-    wire empty = (length_o == '0);
-    // Once aborts are compeletely removed from the project,
-    // we can assign full = (length_0 == WordsMax);
-    // This will save 1 transaction's worth of latency.
-    wire full = (length_o == WordsMax) && (narrow_hs.ldrv.req || last);
+    wire empty = length_o == '0;
+    wire full = length_o == WordsMax;
     wire valid = full || (last && !empty);
     assign lctl.start = valid;
     assign lctl.pause = !valid;
