@@ -4,12 +4,14 @@ module hs_read_mem (
     hs_io.flw read_i_hs,
     hs_io.ldr read_o_hs,
 
-    input  type(read_o_hs.data) mem_data_i,
-    output type(read_i_hs.data) mem_ptr_o
+    input  logic [read_o_hs.W-1:0] mem_data_i,
+    output logic [read_i_hs.W-1:0] mem_ptr_o
 );
     wire clk = read_i_hs.clk;
     wire clk_en = read_i_hs.clk_en;
     wire sync_rst = read_i_hs.sync_rst;
+
+    `HS_FORBID_ABORTS(read_i_hs)
 
     hs::lctl_s read_o_lctl;
     `HS_DRIVE_LDR(read_o_hs, read_o_lctl)
@@ -17,38 +19,44 @@ module hs_read_mem (
     hs::fctl_s read_i_fctl;
     `HS_DRIVE_FLW(read_i_hs, read_i_fctl)
 
-    typedef logic [read_i_hs.W-1:0] ptr_t;
-    typedef logic [read_o_hs.W-1:0] data_t;
+    typedef type (mem_data_i) data_t;
+    typedef type (mem_ptr_o) ptr_t;
 
     typedef struct packed {
-        hs::flag_s flag;
-        ptr_t      ptr;
+        logic good;
+        logic exit;
+    } flag_s;
+
+    typedef struct packed {
+        flag_s flag;
+        ptr_t  ptr;
     } ptr_frame_s;
 
     typedef struct packed {
-        hs::flag_s flag;
-        data_t     data;
+        flag_s flag;
+        data_t data;
     } read_frame_s;
 
     ptr_frame_s ptr_frame;
     read_frame_s read_frame, buffer_frame, output_frame;
-    hs::flag_s data_flag;
+    flag_s data_flag;
 
-    logic      read_enable;
-    logic      unblock;
+    logic  read_enable;
+    logic  unblock;
 
-    assign read_enable          = read_o_hs.flag.good || (!output_frame.flag.good);
+    assign read_enable         = read_o_hs.flag.good || (!output_frame.flag.good);
 
-    assign unblock              = read_o_hs.flag.done || ((!hs::flw_active(read_o_hs.state)) && output_frame.flag.term);
+    assign unblock             = read_o_hs.flag.done;
 
-    assign read_i_fctl.ready = read_enable;
-    assign read_i_fctl.pause = !read_enable;
-    assign read_i_fctl.block = !unblock;
+    assign read_i_fctl.ready   = read_enable;
+    assign read_i_fctl.pause   = !read_enable;
+    assign read_i_fctl.block   = !unblock;
 
-    assign ptr_frame.flag       = read_i_hs.flag;
-    assign ptr_frame.ptr        = ptr_t'(read_i_hs.data);
+    assign ptr_frame.flag.good = read_i_hs.flag.good;
+    assign ptr_frame.flag.exit = read_i_hs.flag.exit;
+    assign ptr_frame.ptr       = ptr_t'(read_i_hs.data);
 
-    assign mem_ptr_o            = ptr_frame.ptr;
+    assign mem_ptr_o           = ptr_frame.ptr;
 
     always_ff @(posedge clk) begin
         if (sync_rst) begin
@@ -59,28 +67,11 @@ module hs_read_mem (
         end
     end
 
-    // inject sticky term flag so it persists while buffer_frame is pending
-    logic term_pending;
-    wire  term_set = data_flag.term || term_pending;
-    wire  term_clr = output_frame.flag.term;
-    always_ff @(posedge clk) begin
-        if (sync_rst) begin
-            term_pending <= 1'b0;
-        end
-        else if (clk_en) begin
-            term_pending <= term_set && !term_clr;
-        end
-    end
-
     always_comb begin
         read_frame.data = data_t'(mem_data_i);
         read_frame.flag = data_flag;
-        if (term_pending) begin
-            read_frame.flag.term = 1'b1;
-        end
     end
 
-    // only care about buffering good frames, term frames are dealt with via sticky flag on read_frame
     always_ff @(posedge clk) begin
         if (sync_rst) begin
             buffer_frame <= '0;
@@ -117,7 +108,7 @@ module hs_read_mem (
             read_o_lctl.start = output_frame.flag.good;
             read_o_lctl.pause = !output_frame.flag.good;
             read_o_lctl.close = output_frame.flag.exit;
-            read_o_lctl.abort = output_frame.flag.term;
+            read_o_lctl.abort = 1'b0;
         end
     end
 

@@ -98,7 +98,7 @@ module hs_serialize #(
     assign lctl.start     = valid;
     assign lctl.pause     = !valid;
     assign lctl.close     = ptr_end && last && valid;
-    assign lctl.abort     = last && !valid; // TODO: set to 0 once we drop hs_buffer
+    assign lctl.abort     = 1'b0;
 
 endmodule : hs_serialize
 

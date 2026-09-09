@@ -7,6 +7,7 @@ module hs_cdc_fifo #(
 );
 
     `HS_ASSERT_H(flw_hs, ldr_hs)
+    `HS_FORBID_ABORTS(flw_hs)
 
     wire wr_clk = flw_hs.clk;
     wire wr_clk_en = flw_hs.clk_en;
@@ -23,7 +24,7 @@ module hs_cdc_fifo #(
 
     hs_io #(
         .T(data_t)
-    ) deref_hs (
+    ) write_hs (
         .clk     (wr_clk),
         .clk_en  (wr_clk_en),
         .sync_rst(wr_sync_rst)
@@ -31,21 +32,8 @@ module hs_cdc_fifo #(
 
     hs_replace_data hs_replace_data (
         .flw_hs(flw_hs),
-        .ldr_hs(deref_hs),
+        .ldr_hs(write_hs),
         .data_i(flw_hs.data)
-    );
-
-    hs_io #(
-        .T(data_t)
-    ) write_hs (
-        .clk     (wr_clk),
-        .clk_en  (wr_clk_en),
-        .sync_rst(wr_sync_rst)
-    );
-
-    hs_absorb_aborts hs_absorb_aborts (
-        .flw_hs(deref_hs),
-        .ldr_hs(write_hs)
     );
 
     logic      wr_en;
