@@ -7,7 +7,6 @@ module hs_fifo #(
     hs_io.ldr ldr_hs
 );
     `HS_ASSERT_H(flw_hs, ldr_hs)
-    `HS_FORBID_ABORTS(flw_hs)
 
     wire clk = flw_hs.clk;
     wire clk_en = flw_hs.clk_en;
@@ -88,7 +87,6 @@ module hs_fifo #(
         assign ldr_lctl.start = ldr_valid;
         assign ldr_lctl.pause = !ldr_valid;
         assign ldr_lctl.close = read.close;
-        assign ldr_lctl.abort = 1'b0;
 
     endgenerate
 

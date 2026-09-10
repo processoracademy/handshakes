@@ -7,7 +7,6 @@ module hs_cdc_fifo #(
 );
 
     `HS_ASSERT_H(flw_hs, ldr_hs)
-    `HS_FORBID_ABORTS(flw_hs)
 
     wire wr_clk = flw_hs.clk;
     wire wr_clk_en = flw_hs.clk_en;
@@ -94,7 +93,6 @@ module hs_cdc_fifo #(
     assign lctl.start  = !empty;
     assign lctl.pause  = empty;
     assign lctl.close  = dout.close;
-    assign lctl.abort  = 1'b0;
     assign rd_en       = rd_clk_en && ldr_hs.fdrv.ack && (ldr_hs.state != hs::BLOCK);
 
     logic prev_reset_0, prev_reset_1;

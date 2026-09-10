@@ -7,11 +7,9 @@ module hs_read_mem (
     input  logic [read_o_hs.W-1:0] mem_data_i,
     output logic [read_i_hs.W-1:0] mem_ptr_o
 );
-    wire clk = read_i_hs.clk;
-    wire clk_en = read_i_hs.clk_en;
-    wire sync_rst = read_i_hs.sync_rst;
-
-    `HS_FORBID_ABORTS(read_i_hs)
+    wire       clk = read_i_hs.clk;
+    wire       clk_en = read_i_hs.clk_en;
+    wire       sync_rst = read_i_hs.sync_rst;
 
     hs::lctl_s read_o_lctl;
     `HS_DRIVE_LDR(read_o_hs, read_o_lctl)
@@ -108,7 +106,6 @@ module hs_read_mem (
             read_o_lctl.start = output_frame.flag.good;
             read_o_lctl.pause = !output_frame.flag.good;
             read_o_lctl.close = output_frame.flag.exit;
-            read_o_lctl.abort = 1'b0;
         end
     end
 

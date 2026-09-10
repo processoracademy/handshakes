@@ -85,10 +85,9 @@ module hs_sync #(
                 end
                 hs::Truncate: begin
                     logic first_last;
-                    logic abort, exit;
-                    abort       = |(lasts_i & ~reqs_i);
+                    logic exit;
                     exit        = (|lasts_i) && (&reqs_i);
-                    first_last  = (abort || exit) && !some_blockers;
+                    first_last  = exit && !some_blockers;
                     ldrv_o.last = first_last;
                 end
                 hs::FrameSync: begin

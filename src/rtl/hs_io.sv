@@ -46,7 +46,6 @@ interface hs_io #(
      * >   flag.live: _-----------_ high for entire handshake including the initial ldrv.req probing
      * >   flag.body: ______-_-____ high on main transfers besides init
      * >   flag.exit: ________-____ high on final pausable cycle
-     * >   flag.term: ________^____ high on final pausable cycle with invalid data. flag.body/flag.good are LOW in this case.
      * >   flag.tail: _________--__ high for h/s block after tx
      * >   flag.done: ___________-_ high on h/s cooldown cycle
      * > state==
@@ -80,7 +79,8 @@ interface hs_io #(
             end
             prev_flag <= flag;
             state     <= next_state;
-            if (flag.term) $warning("Deprecated handshake abort detected! Expect undefined behaviour.");
+            if (ldrv.last && (state == hs::MULTI) && !ldrv.req)
+                $fatal(1, "Aborts are no longer supported as of hs lib v0.7");
         end
     end
 

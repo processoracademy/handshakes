@@ -8,7 +8,6 @@ module hs_register (
     wire sync_rst = flw_hs.sync_rst;
 
     `HS_ASSERT_H(flw_hs, ldr_hs)
-    `HS_FORBID_ABORTS(flw_hs)
 
     logic valid;
     always_ff @(posedge clk) begin
@@ -54,9 +53,8 @@ module hs_register (
 
     hs::lctl_s lctl;
     assign ldr_hs.ldrv = hs::drive_ldr(ldr_hs.state, lctl);
-    assign lctl.start = valid;
-    assign lctl.pause = !valid;
-    assign lctl.close = last && valid;
-    assign lctl.abort = 1'b0;
+    assign lctl.start  = valid;
+    assign lctl.pause  = !valid;
+    assign lctl.close  = last && valid;
 
 endmodule : hs_register

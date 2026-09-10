@@ -13,8 +13,6 @@ module hs_deserialize #(
     wire clk_en = narrow_hs.clk_en;
     wire sync_rst = narrow_hs.sync_rst;
 
-    `HS_FORBID_ABORTS(narrow_hs)
-
     initial begin
         assert ((WideW / narrow_hs.W) * narrow_hs.W == WideW)
         else $fatal(1, "Parameter WideW %0d must be a multiple of narrow_hs width %0d", WideW, narrow_hs.W);
@@ -98,7 +96,6 @@ module hs_deserialize #(
     assign lctl.start = valid;
     assign lctl.pause = !valid;
     assign lctl.close = last && !empty;
-    assign lctl.abort = 1'b0;
 
 endmodule : hs_deserialize
 
