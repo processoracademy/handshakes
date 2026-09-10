@@ -114,7 +114,6 @@ module hs_demux_mask #(
                 ldr_lctl.start   = pending[i] && valid;
                 ldr_lctl.pause   = !(pending[i] && valid);
                 ldr_lctl.close   = last;
-                ldr_lctl.abort   = 1'b0;
                 ldr_not_ready[i] = pending[i] || (ldr_hs[i].state != hs::READY);
                 pending_clr[i]   = ldr_hs[i].flag.good;
             end

@@ -53,6 +53,5 @@ module hs_capture_on_rising_edge #(
 
     assign ldr_lctl.pause = 1'b0;
     assign ldr_lctl.close = 1'b1;
-    assign ldr_lctl.abort = 1'b0;
 
 endmodule : hs_capture_on_rising_edge

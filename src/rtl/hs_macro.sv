@@ -56,14 +56,6 @@
     `ifndef VERILATOR end endgenerate `endif \
 `endif
 
-`define HS_FORBID_ABORTS(hs) `ifdef SIM_DEBUG \
-always_ff @(posedge hs.clk) begin \
-    if(hs.clk_en && hs.flag.term) begin \
-        $fatal(1,"Unsupported abort occured in %s. Eliminate aborts from your design!", `"hs`"); \
-    end \
-end \
-`endif
-
 `define HS_EXPECT_MIN(hs, min) `ifdef SIM_DEBUG \
 generate \
     integer unsigned __hs_expect_min_``hs; \
@@ -73,12 +65,8 @@ generate \
         end \
         else if(hs.clk_en) begin \
             if(hs.flag.exit) begin \
-                case(hs.flag.term) \
-                    1'b1: assert (__hs_expect_min_``hs >= min) \
-                        else $warning("%s data ran for too few cycles (%0d). There should be a minimum of %0d.", `"hs`", __hs_expect_min_``hs, min); \
-                    1'b0: assert (__hs_expect_min_``hs >= (min - 1)) \
-                        else $warning("%s data ran for too few cycles (%0d). There should be a minimum of %0d.", `"hs`", (__hs_expect_min_``hs + 1), min); \
-                endcase \
+                assert (__hs_expect_min_``hs >= (min - 1)) \
+                    else $warning("%s data ran for too few cycles (%0d). There should be a minimum of %0d.", `"hs`", (__hs_expect_min_``hs + 1), min); \
                 __hs_expect_min_``hs <= '0; \
             end \
             else if(hs.flag.good && (__hs_expect_min_``hs < 32'hFFFF_FFFF)) begin \

@@ -24,7 +24,7 @@ module legacy_eot_to_hs_flw (
     );
 
     assign internal_1_hs.fdrv.ack = ack_i && (internal_1_hs.state != hs::BLOCK);
-    assign eot_o = internal_1_hs.ldrv.last;  // We have guaranteed no aborts so this should map correctly.
+    assign eot_o = internal_1_hs.ldrv.last;
     assign req_o = internal_1_hs.ldrv.req;
     assign data_o = internal_1_hs.data;
 

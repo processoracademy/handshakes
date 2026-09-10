@@ -47,12 +47,10 @@ package hs;
     // start - if high while handshake isn't active, commits the driver to starting a new handshake.
     // pause - pauses the active handshake if in the main data transfer phase.
     // close - signals that the current data is the final word of the transfer.
-    // abort - closes the handshake without signalling that the data is valid.
     typedef struct packed {
         logic unsigned start;
         logic unsigned pause;
-        logic unsigned close;  // verilator lint_off SYMRSVDWORD
-        logic unsigned abort;  // verilator lint_on SYMRSVDWORD
+        logic unsigned close;
     } lctl_s;
 
     // Struct: fctl_s
@@ -76,7 +74,6 @@ package hs;
     // live - high for entire handshake including the initial req probing
     // body - high on main transfers besides init
     // exit - high on final pausable cycle
-    // term - high on final pausable cycle with invalid data. flag.body/flag.good are LOW in this case.
     // tail - high for h/s block after tx
     // done - high on h/s cooldown cycle
     typedef struct packed {
@@ -86,7 +83,6 @@ package hs;
         logic live;
         logic body;
         logic exit;
-        logic term;
         logic tail;
         logic done;
     } flag_s;
@@ -115,8 +111,7 @@ package hs;
         get_flags.busy = (req && ack) || hs::flw_active(state);
         get_flags.live = req || (state != hs::READY);
         get_flags.body = req && ack && (state == hs::MULTI);
-        get_flags.exit = (last && req && ack) || (last && (state == hs::MULTI) && !req);  // Second OR term is flag.term
-        get_flags.term = last && (state == hs::MULTI) && !req;
+        get_flags.exit = (last && req && ack);
         get_flags.tail = (state == hs::BLOCK) && ack;
         get_flags.done = (state == hs::BLOCK) && !ack;
     endfunction : get_flags
@@ -126,41 +121,42 @@ package hs;
             req, ack, last, state
         })
             {
-                3'b0??, 2'b0?
-            },  // normal idle or ldr abort on hs::PROBE
-            {
-                3'b?0?, hs::BLOCK
-            } :  // flw drops ack to leave hs::BLOCK state
+                3'b0??, hs::READY  // normal idle
+            }, {
+                3'b0??, hs::PROBE  // ldr gives up probing
+            }, {
+                3'b?0?, hs::BLOCK  // flw drops ack to leave hs::BLOCK state
+            } :
             get_next_state = hs::READY;
 
             {
-                3'b10?, 2'b0?
-            } :  // ldr attempting to establish handshake
+                3'b10?, hs::READY  // ldr attempting to establish handshake
+            }, {
+                3'b10?, hs::PROBE  // ldr attempting to establish handshake
+            } :
             get_next_state = hs::PROBE;
 
             {
-                3'b110, 2'b0?
-            },  // normal entry into mutli-xfer
-            {
-                3'b??0, hs::MULTI
-            },  // continuation of multi-xfer
-            {
-                3'b101, hs::MULTI
-            } :  // flw paused on final mutli-xfer
+                3'b110, hs::READY  // normal entry into mutli-xfer
+            }, {
+                3'b110, hs::PROBE  // normal entry into mutli-xfer
+            }, {
+                3'b??0, hs::MULTI  // continuation of multi-xfer
+            }, {
+                3'b0?1, hs::MULTI  // continuation of multi-xfer
+            }, {
+                3'b101, hs::MULTI  // flw paused on final mutli-xfer
+            } :
             get_next_state = hs::MULTI;
-
             {
-                3'b111, 2'b0?
-            },  // Normal one-shot exit
-            {
-                3'b111, hs::MULTI
-            },  // Normal multi-xfer exit
-            {
-                3'b0?1, hs::MULTI
-            },  // ldr abort in multi-xfer
-            {
-                3'b?1?, hs::BLOCK
-            } :  // flw raises ack to remain in hs::BLOCK
+                3'b111, hs::READY  // Normal one-shot exit
+            }, {
+                3'b111, hs::PROBE  // Normal one-shot exit
+            }, {
+                3'b111, hs::MULTI  // Normal multi-xfer exit
+            }, {
+                3'b?1?, hs::BLOCK  // flw raises ack to remain in hs::BLOCK
+            } :
             get_next_state = hs::BLOCK;
         endcase
     endfunction : get_next_state
@@ -176,9 +172,9 @@ package hs;
 
     function logic unsigned derive_req(input state_e state, input lctl_s lctl);
         unique case (state)
-            hs::READY: return lctl.start && !lctl.abort;
-            hs::PROBE: return !lctl.abort;
-            hs::MULTI: return !(lctl.pause || lctl.abort);
+            hs::READY: return lctl.start;
+            hs::PROBE: return 1'b1;
+            hs::MULTI: return !lctl.pause;
             hs::BLOCK: return 1'b0;
         endcase
     endfunction : derive_req
@@ -186,9 +182,9 @@ package hs;
     function logic unsigned derive_last(input state_e state, input lctl_s lctl);
         // note: a single pulse of last is used as a graceful reset, triggering flag.exit but not flag.good
         unique case (state)
-            hs::READY: return lctl.close && lctl.start && !lctl.abort;
-            hs::PROBE: return lctl.close && !lctl.abort;
-            hs::MULTI: return (lctl.close && !lctl.pause) || lctl.abort;
+            hs::READY: return lctl.close && lctl.start;
+            hs::PROBE: return lctl.close;
+            hs::MULTI: return lctl.close && !lctl.pause;
             hs::BLOCK: return 1'b0;
         endcase
     endfunction : derive_last
@@ -279,7 +275,6 @@ package hs;
         lctl.start = 1'b0;
         lctl.pause = 1'b0;
         lctl.close = 1'b0;
-        lctl.abort = 1'b0;
         return lctl;
     endfunction : lctl_idle
     localparam lctl_s LctlIdle = lctl_idle();
@@ -289,7 +284,6 @@ package hs;
         lctl.start = 1'b1;
         lctl.pause = 1'b0;
         lctl.close = 1'b0;
-        lctl.abort = 1'b0;
         return lctl;
     endfunction : lctl_start
     localparam lctl_s LctlStart = lctl_start();
@@ -299,7 +293,6 @@ package hs;
         lctl.start = 1'b0;
         lctl.pause = 1'b1;
         lctl.close = 1'b0;
-        lctl.abort = 1'b0;
         return lctl;
     endfunction : lctl_pause
     localparam lctl_s LctlPause = lctl_pause();
@@ -309,7 +302,6 @@ package hs;
         lctl.start = 1'b0;
         lctl.pause = 1'b0;
         lctl.close = 1'b0;
-        lctl.abort = 1'b0;
         return lctl;
     endfunction : lctl_resume
     localparam lctl_s LctlResume = lctl_resume();
@@ -319,7 +311,6 @@ package hs;
         lctl.start = 1'b0;
         lctl.pause = 1'b0;
         lctl.close = 1'b1;
-        lctl.abort = 1'b0;
         return lctl;
     endfunction : lctl_last
     localparam lctl_s LctlLast = lctl_last();
@@ -329,19 +320,8 @@ package hs;
         lctl.start = 1'b1;
         lctl.pause = 1'b0;
         lctl.close = 1'b1;
-        lctl.abort = 1'b0;
         return lctl;
     endfunction : lctl_single
     localparam lctl_s LctlSingle = lctl_single();
-
-    function lctl_s lctl_abort();
-        lctl_s lctl;
-        lctl.start = 1'b0;
-        lctl.pause = 1'b1;
-        lctl.close = 1'b0;
-        lctl.abort = 1'b1;
-        return lctl;
-    endfunction : lctl_abort
-    localparam lctl_s LctlAbort = lctl_abort();
 
 endpackage : hs

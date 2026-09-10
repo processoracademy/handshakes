@@ -52,7 +52,7 @@ module hs_filter (
             last <= 1'b0;
         end
         if (clk_en) begin
-            if (flw_hs.flag.exit && ((pass_i && !flw_hs.flag.term) || (ldr_hs.state != hs::READY) || valid)) begin
+            if (flw_hs.flag.exit && (valid || pass_i || (ldr_hs.state != hs::READY))) begin
                 last <= 1'b1;
             end
             else if (ldr_hs.flag.exit) begin
@@ -78,5 +78,5 @@ module hs_filter (
     assign lctl.start = ldr_valid;
     assign lctl.pause = !ldr_valid;
     assign lctl.close = last && valid;
-    assign lctl.abort = 1'b0;
+
 endmodule : hs_filter
