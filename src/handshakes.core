@@ -17,7 +17,6 @@ filesets:
       - rtl/core/hs_alternate.sv
       - rtl/core/hs_alternate_generic.sv
       - rtl/core/hs_append.sv
-      - rtl/core/hs_append_generic.sv
       - rtl/core/hs_arbiter.sv
       - rtl/core/hs_arbitrate_followers.sv
       - rtl/core/hs_arbitrate_leaders.sv
