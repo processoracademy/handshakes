@@ -31,12 +31,12 @@
           inherit (inputs.moppkgs.packages.${system}) slang-server naturaldocs;
           inherit (inputs.fusesoc-flake.legacyPackages.${system}) fusesocCores fusesocTools;
 
-          externalCores = fusesocTools.mkCoreSet [ fusesocCores.""."".fifo."1.3-r1" ];
-
-          coreSet = fusesocTools.extendCoreSet externalCores [
+          coreSet = fusesocTools.mkCoreSet [
             (fusesocTools.importCore {
+              vlnv = "processoracademy:handshakes:handshakes:0.7.0";
               coreRoot = ./src;
               coreName = "handshakes.core";
+              dependencies = [ fusesocCores.""."".fifo."1.3-r1" ];
             })
           ];
 
@@ -53,7 +53,7 @@
                   dirs = [
                     "src"
                   ]
-                  ++ (map (x: "${x}") (fusesocTools.toCoreList externalCores));
+                  ++ (map (x: "${x}") coreSet.processoracademy.handshakes.handshakes.dependencies);
                   excludeDirs = [
                     "build"
                     ".direnv"
